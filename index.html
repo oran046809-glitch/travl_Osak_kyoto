@@ -1,797 +1,1000 @@
 <!DOCTYPE html>
-<html lang="zh-TW" class="scroll-smooth">
+<html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JOURNEY 旅途 | 探索京阪質感之旅 ‧ 精選行程、逛街地圖與購物指南</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Noto Sans TC & Playfair Display -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>2027 京阪 8天7夜 旅遊隨身 App</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- React & ReactDOM CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  
+  <!-- Babel for JSX Compilation -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        cloud: {
-                            base: '#F0EEE9', // PANTONE 11-4201 Cloud Dancer 雲舞白
-                            card: '#FAF9F6',
-                            hover: '#E5E2DA',
-                        },
-                        mocha: {
-                            DEFAULT: '#A47864', // PANTONE 17-1230 Mocha Mousse 摩卡慕斯
-                            light: '#C59E8C',
-                            dark: '#855C4A',
-                            soft: '#F4ECE8',
-                        },
-                        darkwood: {
-                            DEFAULT: '#2D2421', // 墨灰深木質
-                            muted: '#5A4F4B',
-                            light: '#8C7E78',
-                        },
-                        accent: {
-                            amber: '#D97706',
-                            gold: '#F59E0B',
-                            warm: '#FFFBEB',
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['"Noto Sans TC"', 'sans-serif'],
-                        serif: ['"Playfair Display"', 'serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body {
-            background-color: #F0EEE9;
-            color: #2D2421;
-            font-family: 'Noto Sans TC', sans-serif;
-        }
-        .hero-bg {
-            background-image: linear-gradient(to bottom, rgba(45, 36, 33, 0.4), rgba(45, 36, 33, 0.7)), url('https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=1920&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-        }
-        .glass-card {
-            background: rgba(250, 249, 246, 0.92);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(229, 226, 218, 0.8);
-        }
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .hide-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* 隱藏滾動條但保留功能 */
+    .scrollbar-none::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-none {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    body {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+  </style>
 </head>
-<body class="pb-20 lg:pb-0 text-darkwood">
+<body class="bg-[#F0EEE9] text-[#4A3B32]">
+  <div id="root"></div>
 
-    <!-- 頂部通告欄 (Top Announcement Bar) -->
-    <div class="bg-darkwood text-cloud-base text-xs py-2 px-4 text-center flex justify-between items-center max-w-full mx-auto">
-        <div class="hidden sm:block text-cloud-base/70">✨ 探索全新「京阪自由行秘境地圖」特輯</div>
-        <div class="mx-auto sm:mx-0 font-medium">🌸 2026 關西賞楓季預約開放中！輸入優惠碼 <span class="text-mocha-light font-bold">KANSAI2026</span> 現折 10%</div>
-        <div class="hidden sm:flex items-center gap-4 text-cloud-base/70">
-            <a href="#" class="hover:text-white transition"><i class="fa-solid fa-headset mr-1"></i> 客服中心</a>
-            <a href="#" class="hover:text-white transition"><i class="fa-solid fa-mobile-screen mr-1"></i> 下載 App</a>
-        </div>
-    </div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
 
-    <!-- 主導航列 Header Navbar -->
-    <header class="sticky top-0 z-50 bg-cloud-card/95 backdrop-blur-md border-b border-cloud-hover shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <!-- 品牌 Logo -->
-                <div class="flex items-center gap-8">
-                    <a href="#" class="flex items-center gap-2 group">
-                        <div class="w-10 h-10 rounded-xl bg-mocha flex items-center justify-center text-white text-xl font-bold shadow-md group-hover:bg-mocha-dark transition">
-                            J
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="font-serif text-2xl font-bold tracking-wider text-darkwood leading-none">JOURNEY</span>
-                            <span class="text-[10px] tracking-widest text-mocha font-semibold mt-1">JOURNEY TO JAPAN</span>
-                        </div>
-                    </a>
+    // 類別標籤設定
+    const CATEGORY_CONFIG = {
+      transport: { label: '交', bg: 'bg-amber-100', text: 'text-amber-800' },
+      hotel: { label: '宿', bg: 'bg-emerald-100', text: 'text-emerald-800' },
+      spot: { label: '旅', bg: 'bg-rose-100', text: 'text-rose-800' },
+      food: { label: '食', bg: 'bg-orange-100', text: 'text-orange-800' },
+      shop: { label: '購', bg: 'bg-purple-100', text: 'text-purple-800' }
+    };
 
-                    <!-- 桌面端 4 大核心頁籤導航 -->
-                    <nav class="hidden lg:flex items-center space-x-1 border-l border-cloud-hover pl-8">
-                        <a href="#itinerary" class="px-4 py-2 rounded-xl text-sm font-semibold text-darkwood hover:text-mocha hover:bg-cloud-hover/50 transition flex items-center gap-2">
-                            <i class="fa-solid fa-route text-mocha"></i> 行程
-                        </a>
-                        <a href="#shopping-map" class="px-4 py-2 rounded-xl text-sm font-semibold text-darkwood hover:text-mocha hover:bg-cloud-hover/50 transition flex items-center gap-2">
-                            <i class="fa-solid fa-map-location-dot text-mocha"></i> 逛街地圖
-                        </a>
-                        <a href="#shopping-buys" class="px-4 py-2 rounded-xl text-sm font-semibold text-darkwood hover:text-mocha hover:bg-cloud-hover/50 transition flex items-center gap-2">
-                            <i class="fa-solid fa-bag-shopping text-mocha"></i> 購物
-                        </a>
-                        <a href="#toolkit" class="px-4 py-2 rounded-xl text-sm font-semibold text-darkwood hover:text-mocha hover:bg-cloud-hover/50 transition flex items-center gap-2">
-                            <i class="fa-solid fa-toolbox text-mocha"></i> 工具
-                        </a>
-                    </nav>
+    // 初始行程資料
+    const INITIAL_ITINERARY = [
+      {
+        day: 1,
+        date: '2027-02-24',
+        week: '三',
+        title: '關西抵達 ➔ 直奔京都 ➔ 世界遺產東寺探訪 & 伊勢丹購物',
+        hotel: "Hotel The M's Kyoto (京都)",
+        hotelMapUrl: 'https://maps.google.com/?q=Hotel+The+M%27s+Kyoto',
+        spots: [
+          {
+            id: '1-1',
+            time: '12:50',
+            name: '抵達關西國際機場 (KIX)',
+            address: '大阪府泉佐野市泉州空港北1',
+            notes: '預抓 1 小時完成入境與領行李。搭乘 JR Haruka 特急 (約 80 分鐘) 直達京都站。',
+            category: 'transport',
+            googleMapsUrl: 'https://maps.google.com/?q=Kansai+International+Airport'
+          },
+          {
+            id: '1-2',
+            time: '14:50',
+            name: "Hotel The M's Kyoto 辦理入住",
+            address: '京都府京都市南區東九條東山王町14',
+            notes: '辦理 Check-in、放置行李，整備後展開京都古都巡禮。',
+            category: 'hotel',
+            googleMapsUrl: "https://maps.google.com/?q=Hotel+The+M%27s+Kyoto"
+          },
+          {
+            id: '1-3',
+            time: '15:40',
+            name: '東寺 (Toji Temple)',
+            address: '京都府京都市南區九條町1',
+            notes: '世界文化遺產，參觀日本最高木造五重塔與講堂密教尊像。',
+            category: 'spot',
+            googleMapsUrl: 'https://maps.google.com/?q=Toji+Temple'
+          },
+          {
+            id: '1-4',
+            time: '17:30',
+            name: 'JR 京都伊勢丹 B1F 購物與美食美食街',
+            address: '日本〒600-8216 Kyoto, Shimogyo Ward, Higashishiokojicho, 901 ジェイアール京都伊勢丹 B1F',
+            notes: '採購京都知名老鋪和菓子、抹茶伴手禮與極緻日式精緻便當甜點。',
+            category: 'shop',
+            googleMapsUrl: 'https://maps.google.com/?q=JR+Kyoto+Isetan+B1F'
+          }
+        ]
+      },
+      {
+        day: 2,
+        date: '2027-02-25',
+        week: '四',
+        title: '洛北靈氣山神巡禮 (貴船神社 ➔ 下鴨神社)',
+        hotel: "Hotel The M's Kyoto (京都)",
+        hotelMapUrl: 'https://maps.google.com/?q=Hotel+The+M%27s+Kyoto',
+        spots: [
+          {
+            id: '2-1',
+            time: '09:30',
+            name: '貴船神社 (Kifune Shrine)',
+            address: '京都府京都市左京區鞍馬貴船町180',
+            notes: '紅燈籠石階、水占卜、繪馬發源地。冬日體驗靈氣山神洗禮。',
+            category: 'spot',
+            googleMapsUrl: 'https://maps.google.com/?q=Kifune+Shrine'
+          },
+          {
+            id: '2-2',
+            time: '13:30',
+            name: '下鴨神社 (賀茂御祖神社) & 糺之森',
+            address: '京都府京都市左京區下鴨泉川町59',
+            notes: '搭乘叡山電車至出町柳轉乘，漫步太古原生林「糺之森」，參拜水守護與河合神社美顏繪馬。',
+            category: 'spot',
+            googleMapsUrl: 'https://maps.google.com/?q=Shimogamo+Shrine'
+          }
+        ]
+      },
+      {
+        day: '2-1',
+        date: '2027-02-25',
+        week: '四',
+        title: '洛北與東山禪意巡禮 (貴船神社 ➔ 銀閣寺)',
+        hotel: "Hotel The M's Kyoto (京都)",
+        hotelMapUrl: 'https://maps.google.com/?q=Hotel+The+M%27s+Kyoto',
+        spots: [
+          {
+            id: '2-1-1',
+            time: '09:30',
+            name: '貴船神社 (Kifune Shrine)',
+            address: '京都府京都市左京區鞍馬貴船町180',
+            notes: '紅燈籠石階、水占卜、繪馬發源地。冬日體驗靈氣山神洗禮。',
+            category: 'spot',
+            googleMapsUrl: 'https://maps.google.com/?q=Kifune+Shrine'
+          },
+          {
+            id: '2-1-2',
+            time: '13:30',
+            name: '銀閣寺 (慈照寺 Jisho-ji)',
+            address: '京都府京都市左京區銀閣寺町2',
+            notes: '世界文化遺產，枯山水庭園與向月台，觀賞東山文化古樸禪意風格。',
+            category: 'spot',
+            googleMapsUrl: 'https://maps.google.com/?q=Ginkakuji'
+          }
+        ]
+      },
+      {
+        day: 3,
+        date: '2027-02-26',
+        week: '五',
+        title: '學問之神、經典名剎與白兔神社',
+        hotel: "Hotel The M's Kyoto (京都)",
+        hotelMapUrl: 'https://maps.google.com/?q=Hotel+The+M%27s+Kyoto',
+        spots: [
+          {
+            id: '3-1',
+            time: '09:00',
+            name: '北野天滿宮 (Kitano Tenmangu)',
+            address: '京都府京都市上京區馬喰町',
+            notes: '日本天滿宮總本社，賞早梅與求祈學業順利。',
+            category: 'spot',
+            googleMapsUrl: 'https://maps.google.com/?q=Kitano+Tenmangu'
+          },
+          {
+            id: '3-2',
+            time: '11:00',
+            name: '仁和寺 (Ninna-ji Temple)',
+            address: '京都府京都市右京區御室大內33',
+            notes: '從北野天滿宮搭乘嵐電直達，世界遺產與御室御所古蹟建築。',
+            category: 'spot',
+            googleMapsUrl: 'https://maps.google.com/?q=Ninnaji'
+          },
+          {
+            id: '3-3',
+            time: '13:30',
+            name: '上賀茂神社 (Kamigamo Shrine)',
+            address: '京都府京都市北區上賀茂本神集339',
+            notes: '京都最古老神社之一，立砂奇景與清澈小溪神域。',
+            category: 'spot',
+            googleMapsUrl: 'https://maps.google.com/?q=Kamigamo+Shrine'
+          },
+          {
+            id: '3-4',
+            time: '16:00',
+            name: '岡崎神社 (Okazaki Shrine)',
+            address: '京都府京都市左京區岡崎東天王町51',
+            notes: '熱門白兔神社，求求子求求安產，開運白兔御神籤。',
+            category: 'spot',
+            googleMapsUrl: 'https://maps.google.com/?q=Okazaki+Shrine'
+          }
+        ]
+      },
+      {
+        day: 4,
+        date: '2027-02-27',
+        week: '六',
+        title: '烏丸南北貫穿古社巡禮',
+        hotel: "Hotel The M's Kyoto (京都)",
+        hotelMapUrl: 'https://maps.google.com/?q=Hotel+The+M%27s+Kyoto',
+        spots: [
+          {
+            id: '4-1',
+            time: '09:30',
+            name: '京都御所 (Kyoto Imperial Palace)',
+            address: '京都府京都市上京區京都御苑3',
+            notes: '清晨參觀昔日皇室宮邸與高雅庭園，避開白天觀光人潮。',
+            category: 'spot',
+            googleMapsUrl: 'https://maps.google.com/?q=Kyoto+Imperial+Palace'
+          },
+          {
+            id: '4-2',
+            time: '11:30',
+            name: '護王神社 (Go-o Shrine)',
+            address: '京都府京都市上京區烏丸通下長者町下ル櫻鶴圓町385',
+            notes: '位於京都御所蛤御門正對面，徒步3分鐘即達！足腰守護與野豬石像。',
+            category: 'spot',
+            googleMapsUrl: 'https://maps.google.com/?q=Goo+Shrine'
+          },
+          {
+            id: '4-3',
+            time: '14:00',
+            name: '御金神社 (Mikane Shrine)',
+            address: '京都府京都市中京區押西洞院町618',
+            notes: '地鐵烏丸線順路向南至烏丸御池，參拜金黃鳥居與洗錢求財。',
+            category: 'spot',
+            googleMapsUrl: 'https://maps.google.com/?q=Mikane+Shrine'
+          },
+          {
+            id: '4-4',
+            time: '15:30',
+            name: '市比賣神社 (Ichihime Shrine)',
+            address: '京都府京都市下京區河原町五條下ル一之船入町',
+            notes: '順路向南至五條站附近，女性守護與姬籤體驗。',
+            category: 'spot',
+            googleMapsUrl: 'https://maps.google.com/?q=Ichihime+Shrine'
+          }
+        ]
+      },
+      {
+        day: 5,
+        date: '2027-02-28',
+        week: '日',
+        title: '移防大阪、中之島藝術與梅田露天神社散策',
+        hotel: 'Hotel Gracery Osaka Namba (大阪難波)',
+        hotelMapUrl: 'https://maps.google.com/?q=Hotel+Gracery+Osaka+Namba',
+        spots: [
+          {
+            id: '5-1',
+            time: '10:00',
+            name: '京都飯店退房 & 移動至大阪難波',
+            address: '大阪府大阪市中央區難波1-4-16',
+            notes: '搭乘近鐵特急或 JR 前往大阪難波飯店 Check-in / 寄放行李。',
+            category: 'transport',
+            googleMapsUrl: 'https://maps.google.com/?q=Hotel+Gracery+Osaka+Namba'
+          },
+          {
+            id: '5-2',
+            time: '13:00',
+            name: '大阪府立中之島圖書館',
+            address: '大阪府大阪市北區中之島1-2-10',
+            notes: '重要文化財，古典巴洛克雄偉石造建築，附設丹麥三明治 Café。',
+            category: 'spot',
+            googleMapsUrl: 'https://maps.google.com/?q=Nakanoshima+Library'
+          },
+          {
+            id: '5-3',
+            time: '14:30',
+            name: '大阪中之島美術館 (NAKANOSHIMA MUSEUM)',
+            address: '大阪府大阪市北區中之島4-3-1',
+            notes: '黑色巨型方塊現代建築藝術景點，戶外巨大貓咪雕塑打卡。',
+            category: 'spot',
+            googleMapsUrl: 'https://maps.google.com/?q=Nakanoshima+Museum+of+Art'
+          },
+          {
+            id: '5-4',
+            time: '16:30',
+            name: '露天神社 (Ohatsu Tenjin)',
+            address: '〒530-0057 大阪府大阪市北区曾根崎２丁目５−4',
+            notes: '近松門左衛門人形淨瑠璃靈魂之地，求戀愛成就與心靈寄託。',
+            category: 'spot',
+            googleMapsUrl: 'https://maps.google.com/?q=Ohatsu+Tenjin'
+          },
+          {
+            id: '5-5',
+            time: '17:30',
+            name: '梅田商圈大逛街 (LUCUA / GRAND FRONT / 阪急)',
+            address: '大阪府大阪市北區梅田',
+            notes: '順路逛梅田商圈，血拼精緻服飾、雜貨、藥妝與曾根崎初天神通美食。',
+            category: 'shop',
+            googleMapsUrl: 'https://maps.google.com/?q=Umeda+Station'
+          }
+        ]
+      },
+      {
+        day: 6,
+        date: '2027-03-01',
+        week: '一',
+        title: '古社參拜 ➔ 勝尾寺勝運達摩 ➔ 箕面瀑布 ➔ 難波商圈大逛街',
+        hotel: 'Hotel Gracery Osaka Namba (大阪難波)',
+        hotelMapUrl: 'https://maps.google.com/?q=Hotel+Gracery+Osaka+Namba',
+        spots: [
+          {
+            id: '6-1',
+            time: '09:30',
+            name: '服部住吉神社 (Hattori Sumiyoshi Shrine)',
+            address: '大阪府豐中市服部南町1-4-1',
+            notes: '搭乘阪急寶塚線至服部天神站，早晨參拜清靜幽深古社。',
+            category: 'spot',
+            googleMapsUrl: 'https://maps.google.com/?q=Hattori+Sumiyoshi+Shrine'
+          },
+          {
+            id: '6-2',
+            time: '11:30',
+            name: '勝尾寺 (Katsuo-ji Temple)',
+            address: '大阪府箕面市勝尾寺',
+            notes: '勝運之寺！滿山滿谷的迷你勝運達摩不倒翁，求運勢旺盛。',
+            category: 'spot',
+            googleMapsUrl: 'https://maps.google.com/?q=Katsuo-ji'
+          },
+          {
+            id: '6-3',
+            time: '14:00',
+            name: '箕面瀑布 (Minoh Waterfall)',
+            address: '大阪府箕面市箕面公園',
+            notes: '日本瀑布百選之一！漫步溪谷步道，感受天然大瀑布芬多精。',
+            category: 'spot',
+            googleMapsUrl: 'https://maps.google.com/?q=Minoh+Waterfall'
+          },
+          {
+            id: '6-4',
+            time: '17:00',
+            name: '難波商圈大逛街 (Namba Shopping)',
+            address: '大阪府大阪市中央區難波',
+            notes: '返回難波市區，晚餐享用道頓堀美食、藥妝補貨，輕鬆散步回飯店擺放戰利品。',
+            category: 'shop',
+            googleMapsUrl: 'https://maps.google.com/?q=Namba+Station'
+          }
+        ]
+      },
+      {
+        day: 7,
+        date: '2027-03-02',
+        week: '二',
+        title: '泉州大鳥大社 ➔ 難波/心齋橋/道頓堀極致購物狂歡',
+        hotel: 'Hotel Gracery Osaka Namba (大阪難波)',
+        hotelMapUrl: 'https://maps.google.com/?q=Hotel+Gracery+Osaka+Namba',
+        spots: [
+          {
+            id: '7-1',
+            time: '10:00',
+            name: '大鳥神社 (大鳥大社 Otori Taisha)',
+            address: '大阪府堺市西區鳳北町1-1-2',
+            notes: '和泉國一之宮，千家千庵名剎，參拜和泉大鳥居與日本武尊神話祈願。',
+            category: 'spot',
+            googleMapsUrl: 'https://maps.google.com/?q=Otori+Taisha'
+          },
+          {
+            id: '7-2',
+            time: '14:30',
+            name: '難波 / 心齋橋 / 道頓堀商圈大血拼',
+            address: '大阪府大阪市中央區心齋橋筋',
+            notes: '專屬大逛街日！藥妝店、PARCO、高島屋、心齋橋筋大採購，買完直接拎回飯店。',
+            category: 'shop',
+            googleMapsUrl: 'https://maps.google.com/?q=Shinsaibashi'
+          }
+        ]
+      },
+      {
+        day: 8,
+        date: '2027-03-03',
+        week: '三',
+        title: '難波退房 ➔ 南海電鐵直達關西機場返台',
+        hotel: '溫馨的家',
+        hotelMapUrl: 'https://maps.google.com/?q=Kansai+International+Airport',
+        spots: [
+          {
+            id: '8-1',
+            time: '10:00',
+            name: '飯店辦理退房Check-out',
+            address: '大阪府大阪市中央區難波1-4-16',
+            notes: '整理行李打包戰利品，至南海難波站搭乘 Rapi:t 機場特急。',
+            category: 'hotel',
+            googleMapsUrl: 'https://maps.google.com/?q=Namba+Station'
+          },
+          {
+            id: '8-2',
+            time: '11:30',
+            name: '抵達關西機場 (KIX) 免稅店掃貨與登機',
+            address: '大阪府泉佐野市泉州空港北1',
+            notes: '辦理託運、入關免稅店最後補貨，準備搭機結束完美京阪行程。',
+            category: 'transport',
+            googleMapsUrl: 'https://maps.google.com/?q=Kansai+International+Airport'
+          }
+        ]
+      }
+    ];
+
+    function App() {
+      const [activeTab, setActiveTab] = useState('itinerary');
+      const [selectedDay, setSelectedDay] = useState(1);
+      const [showImportModal, setShowImportModal] = useState(false);
+      const [showAddModal, setShowAddModal] = useState(false);
+      const [importText, setImportText] = useState('');
+
+      const [newSpotForm, setNewSpotForm] = useState({
+        name: '',
+        time: '12:00',
+        address: '',
+        category: 'spot',
+        notes: ''
+      });
+
+      const [itinerary, setItinerary] = useState(() => {
+        try {
+          const saved = localStorage.getItem('kyoto_osaka_html_app');
+          return saved ? JSON.parse(saved) : INITIAL_ITINERARY;
+        } catch (e) {
+          return INITIAL_ITINERARY;
+        }
+      });
+
+      useEffect(() => {
+        try {
+          localStorage.setItem('kyoto_osaka_html_app', JSON.stringify(itinerary));
+        } catch (e) {}
+      }, [itinerary]);
+
+      useEffect(() => {
+        if (window.lucide) {
+          window.lucide.createIcons();
+        }
+      });
+
+      const currentDayData = itinerary.find(d => d.day === selectedDay) || itinerary[0];
+
+      const getGoogleMapsDirectionsUrl = (spotName, address, prevSpot = null) => {
+        const destinationQuery = encodeURIComponent(address ? `${spotName} ${address}` : spotName);
+        if (prevSpot) {
+          const originQuery = encodeURIComponent(prevSpot.address ? `${prevSpot.name} ${prevSpot.address}` : prevSpot.name);
+          return `https://www.google.com/maps/dir/?api=1&origin=${originQuery}&destination=${destinationQuery}&travelmode=transit`;
+        }
+        return `https://www.google.com/maps/dir/?api=1&destination=${destinationQuery}&travelmode=transit`;
+      };
+
+      const handleExecuteImport = () => {
+        if (!importText.trim()) return;
+
+        const lines = importText.split('\n').filter(line => line.trim() !== '');
+        const newSpots = lines.map((line, idx) => {
+          const timeMatch = line.match(/^(\d{1,2}:\d{2})\s*(.*)/);
+          let time = '12:00';
+          let name = line.trim();
+
+          if (timeMatch) {
+            time = timeMatch[1];
+            name = timeMatch[2] || line.trim();
+          }
+
+          return {
+            id: `${selectedDay}-imp-${Date.now()}-${idx}`,
+            time,
+            name,
+            address: '',
+            notes: '由文字批量匯入',
+            category: 'spot',
+            googleMapsUrl: `https://maps.google.com/?q=${encodeURIComponent(name)}`
+          };
+        });
+
+        setItinerary(prev => prev.map(d => {
+          if (d.day === selectedDay) {
+            return { ...d, spots: [...d.spots, ...newSpots] };
+          }
+          return d;
+        }));
+
+        setImportText('');
+        setShowImportModal(false);
+      };
+
+      const handleDeleteSpot = (dayNum, spotId) => {
+        setItinerary(prev => prev.map(d => {
+          if (d.day === dayNum) {
+            return { ...d, spots: d.spots.filter(s => s.id !== spotId) };
+          }
+          return d;
+        }));
+      };
+
+      const handleCreateSpotSubmit = (e) => {
+        e.preventDefault();
+        if (!newSpotForm.name.trim()) return;
+
+        const queryTarget = encodeURIComponent(`${newSpotForm.name} ${newSpotForm.address}`.trim());
+        const newSpot = {
+          id: `${selectedDay}-${Date.now()}`,
+          time: newSpotForm.time || '12:00',
+          name: newSpotForm.name.trim(),
+          address: newSpotForm.address.trim(),
+          notes: newSpotForm.notes.trim(),
+          category: newSpotForm.category || 'spot',
+          googleMapsUrl: `https://maps.google.com/?q=${queryTarget}`
+        };
+
+        setItinerary(prev => prev.map(d => {
+          if (d.day === selectedDay) {
+            const updatedSpots = [...d.spots, newSpot].sort((a, b) => a.time.localeCompare(b.time));
+            return { ...d, spots: updatedSpots };
+          }
+          return d;
+        }));
+
+        setNewSpotForm({ name: '', time: '12:00', address: '', category: 'spot', notes: '' });
+        setShowAddModal(false);
+      };
+
+      return (
+        <div className="min-h-screen bg-[#F0EEE9] text-[#4A3B32] font-sans pb-28 antialiased">
+          
+          {/* Header */}
+          <header className="bg-[#4A3B32] text-white px-5 py-4 shadow-md sticky top-0 z-30">
+            <div className="max-w-xl mx-auto flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-[#8C7A6B] flex items-center justify-center font-bold text-base shadow-inner">
+                  京
                 </div>
-
-                <!-- 右側工具與會員功能 -->
-                <div class="flex items-center gap-3">
-                    <button class="hidden md:flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-cloud-hover rounded-xl hover:bg-cloud-hover transition">
-                        <i class="fa-solid fa-globe text-darkwood-muted"></i> 繁體中文 / TWD ($)
-                    </button>
-
-                    <button class="w-10 h-10 rounded-xl border border-cloud-hover flex items-center justify-center text-darkwood-muted hover:text-mocha hover:bg-cloud-hover transition relative">
-                        <i class="fa-regular fa-heart text-base"></i>
-                        <span class="absolute top-2 right-2 w-2 h-2 bg-mocha rounded-full"></span>
-                    </button>
-
-                    <button class="w-10 h-10 rounded-xl border border-cloud-hover flex items-center justify-center text-darkwood-muted hover:text-mocha hover:bg-cloud-hover transition relative">
-                        <i class="fa-solid fa-cart-shopping text-base"></i>
-                        <span class="absolute -top-1 -right-1 bg-mocha text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">2</span>
-                    </button>
-
-                    <a href="#" class="hidden sm:flex items-center gap-2 px-5 py-2.5 rounded-xl bg-mocha text-white text-sm font-medium shadow-md hover:bg-mocha-dark transition">
-                        <i class="fa-regular fa-user"></i> 登入 / 註冊
-                    </a>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h1 className="font-bold text-lg tracking-wide">2027 京阪 8天7夜 ✨</h1>
+                    <span className="text-[11px] bg-white/15 px-2 py-0.5 rounded-full font-mono text-stone-200">
+                      2/24 - 3/3
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-[#C2A698] font-mono tracking-wider mt-0.5">
+                    PANTONE Cloud Dancer x Mocha Mousse
+                  </p>
                 </div>
+              </div>
             </div>
-        </div>
-    </header>
+          </header>
 
-    <!-- Hero 主視覺與綜合搜尋引擎 -->
-    <section class="relative hero-bg py-20 lg:py-28 px-4 sm:px-6 lg:px-8 text-white">
-        <div class="max-w-5xl mx-auto text-center space-y-6">
-            <span class="inline-block px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-xs tracking-wider uppercase font-medium border border-white/30">
-                Kyoto & Osaka Premium Guide
-            </span>
-            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold font-serif tracking-tight leading-tight">
-                探索京阪質感之旅<br><span class="text-mocha-light italic font-normal">記錄專屬於你的美好時光</span>
-            </h1>
-            <p class="text-sm sm:text-base text-cloud-base/90 max-w-2xl mx-auto font-light">
-                匯集京都古都風情與大阪熱鬧商圈。精選質感行程、在地逛街地圖指南與必買購物清單，帶您開啟精緻旅行體驗。
-            </p>
+          <main className="max-w-xl mx-auto px-4 pt-4">
 
-            <!-- 綜合搜尋引擎 Search Widget -->
-            <div class="mt-8 text-left max-w-4xl mx-auto">
-                <!-- 搜尋類別分頁 Tabs -->
-                <div class="flex space-x-1 bg-darkwood/70 backdrop-blur-md p-1.5 rounded-t-2xl border-t border-x border-white/20 w-max">
-                    <button onclick="switchSearchTab('hotel')" id="tab-hotel" class="search-tab-btn px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition bg-mocha text-white shadow-sm">
-                        <i class="fa-solid fa-hotel mr-1.5"></i> 飯店住宿
-                    </button>
-                    <button onclick="switchSearchTab('tour')" id="tab-tour" class="search-tab-btn px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition text-cloud-base hover:text-white hover:bg-white/10">
-                        <i class="fa-solid fa-compass mr-1.5"></i> 行程體驗
-                    </button>
-                    <button onclick="switchSearchTab('ticket')" id="tab-ticket" class="search-tab-btn px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition text-cloud-base hover:text-white hover:bg-white/10">
-                        <i class="fa-solid fa-train mr-1.5"></i> 交通票券
-                    </button>
-                    <button onclick="switchSearchTab('pass')" id="tab-pass" class="search-tab-btn px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition text-cloud-base hover:text-white hover:bg-white/10">
-                        <i class="fa-solid fa-ticket mr-1.5"></i> 景點門票
-                    </button>
+            {activeTab === 'itinerary' && (
+              <div className="space-y-4">
+                
+                {/* DAY 頁籤列 */}
+                <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+                  {itinerary.map(item => {
+                    const isSelected = item.day === selectedDay;
+                    return (
+                      <button
+                        key={item.day}
+                        onClick={() => setSelectedDay(item.day)}
+                        className={`flex-shrink-0 px-4 py-2 rounded-xl text-center transition-all ${
+                          isSelected 
+                            ? 'bg-[#8C7A6B] text-white font-bold shadow-sm' 
+                            : 'bg-[#E5E1DA] text-[#6E5D53] hover:bg-[#DCD7CE]'
+                        }`}
+                      >
+                        <div className="text-xs font-bold uppercase tracking-wider">
+                          {typeof item.day === 'number' ? `DAY ${item.day}` : `DAY ${item.day}`}
+                        </div>
+                        <div className="text-[10px] opacity-90 mt-0.5">{item.date}</div>
+                      </button>
+                    );
+                  })}
                 </div>
 
-                <!-- 搜尋欄位主要卡片 -->
-                <div class="glass-card p-4 sm:p-6 rounded-b-2xl rounded-tr-2xl shadow-2xl text-darkwood border border-cloud-hover">
-                    <form onsubmit="event.preventDefault();" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
-                        <!-- 欄位 1: 目的地 / 關鍵字 -->
-                        <div class="md:col-span-4 bg-white p-3 rounded-xl border border-cloud-hover hover:border-mocha transition">
-                            <label class="block text-[10px] font-bold uppercase tracking-wider text-darkwood-light">目的地 / 關鍵字</label>
-                            <div class="flex items-center gap-2 mt-1">
-                                <i class="fa-solid fa-location-dot text-mocha"></i>
-                                <input type="text" id="search-input" placeholder="例如：京都站、心齋橋、清水寺" class="w-full text-sm font-medium text-darkwood focus:outline-none placeholder-darkwood-light">
-                            </div>
+                {/* 當日概覽卡片 */}
+                <div className="bg-white rounded-2xl p-4 border border-[#E5E1DA] shadow-xs">
+                  <div className="flex items-center gap-2 text-xs font-bold text-[#8C7A6B] mb-1">
+                    <span className="bg-[#8C7A6B] text-white px-2 py-0.5 rounded-md text-[11px]">
+                      DAY {currentDayData.day}
+                    </span>
+                    <span>{currentDayData.date} ({currentDayData.week})</span>
+                  </div>
+                  <h2 className="text-base font-bold text-[#4A3B32] mt-1 mb-2">
+                    {currentDayData.title}
+                  </h2>
+                  <div className="flex items-center justify-between text-xs text-[#786458] border-t border-[#F0EEE9] pt-2.5 mt-2">
+                    <div className="flex items-center gap-1.5 truncate">
+                      <i data-lucide="map-pin" className="w-3.5 h-3.5 flex-shrink-0 text-[#8C7A6B]"></i>
+                      <span>住宿：{currentDayData.hotel}</span>
+                    </div>
+                    {currentDayData.hotelMapUrl && (
+                      <a
+                        href={currentDayData.hotelMapUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-[#8C7A6B] font-medium hover:underline flex-shrink-0 ml-2"
+                      >
+                        導航 <i data-lucide="external-link" className="w-3 h-3"></i>
+                      </a>
+                    )}
+                  </div>
+                </div>
+
+                {/* 控制項 */}
+                <div className="flex items-center justify-between pt-1">
+                  <span className="text-xs font-bold text-[#6E5D53]">
+                    當日景點明細 ({currentDayData.spots.length})
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={() => setShowImportModal(true)}
+                      className="px-3 py-1.5 text-xs bg-white text-[#6E5D53] rounded-lg border border-[#DCD7CE] flex items-center gap-1 hover:bg-[#F8F7F5]"
+                    >
+                      <i data-lucide="file-text" className="w-3.5 h-3.5"></i> 匯入文字
+                    </button>
+                    <button 
+                      onClick={() => setShowAddModal(true)}
+                      className="px-3 py-1.5 text-xs bg-[#8C7A6B] text-white rounded-lg flex items-center gap-1 hover:bg-[#786458] shadow-xs font-medium cursor-pointer"
+                    >
+                      <i data-lucide="plus" className="w-3.5 h-3.5"></i> 新增景點
+                    </button>
+                  </div>
+                </div>
+
+                {/* 時間軸景點列表 */}
+                <div className="space-y-4 relative before:absolute before:inset-0 before:left-[15px] before:w-0.5 before:bg-[#DCD7CE] before:z-0">
+                  {currentDayData.spots.map((spot, index) => {
+                    const cat = CATEGORY_CONFIG[spot.category] || CATEGORY_CONFIG.spot;
+                    const prevSpot = index > 0 ? currentDayData.spots[index - 1] : null;
+                    const directionsUrl = getGoogleMapsDirectionsUrl(spot.name, spot.address, prevSpot);
+
+                    return (
+                      <div key={spot.id} className="relative z-10 flex items-start gap-3">
+                        <div className={`w-8 h-8 rounded-full ${cat.bg} ${cat.text} flex items-center justify-center font-bold text-xs flex-shrink-0 shadow-xs mt-1 border-2 border-[#F0EEE9]`}>
+                          {cat.label}
                         </div>
 
-                        <!-- 欄位 2: 日期範圍 -->
-                        <div class="md:col-span-4 bg-white p-3 rounded-xl border border-cloud-hover hover:border-mocha transition">
-                            <label class="block text-[10px] font-bold uppercase tracking-wider text-darkwood-light">入住與退房日期</label>
-                            <div class="flex items-center gap-2 mt-1">
-                                <i class="fa-regular fa-calendar-days text-mocha"></i>
-                                <input type="text" value="2026/11/15 - 2026/11/19" class="w-full text-sm font-medium text-darkwood focus:outline-none bg-transparent">
+                        <div className="flex-1 bg-white rounded-2xl p-4 border border-[#E5E1DA] shadow-xs space-y-2">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 text-xs font-bold text-[#786458]">
+                              <span className="flex items-center gap-1">
+                                <i data-lucide="clock" className="w-3.5 h-3.5 text-[#8C7A6B]"></i> {spot.time}
+                              </span>
                             </div>
-                        </div>
-
-                        <!-- 欄位 3: 人數 / 房間數 -->
-                        <div class="md:col-span-3 bg-white p-3 rounded-xl border border-cloud-hover hover:border-mocha transition">
-                            <label class="block text-[10px] font-bold uppercase tracking-wider text-darkwood-light">人數與房間</label>
-                            <div class="flex items-center gap-2 mt-1">
-                                <i class="fa-solid fa-user-group text-mocha"></i>
-                                <select class="w-full text-sm font-medium text-darkwood focus:outline-none bg-transparent cursor-pointer">
-                                    <option>2 位成人，1 間房</option>
-                                    <option>1 位成人，1 間房</option>
-                                    <option>4 位成人，2 間房</option>
-                                    <option>家庭出遊 (2大2小)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- 搜尋按鈕 -->
-                        <div class="md:col-span-1 h-full">
-                            <button type="submit" class="w-full h-full py-3.5 bg-mocha hover:bg-mocha-dark text-white rounded-xl font-bold shadow-lg transition flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-magnifying-glass text-lg"></i>
-                                <span class="md:hidden">搜尋優惠行程</span>
+                            <button 
+                              onClick={() => handleDeleteSpot(selectedDay, spot.id)}
+                              className="text-stone-300 hover:text-red-500 transition-colors p-1"
+                              title="刪除"
+                            >
+                              <i data-lucide="trash-2" className="w-3.5 h-3.5"></i>
                             </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
+                          </div>
 
-    <!-- 分頁導向卡片區 (Quick Navigation Cards) -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <a href="#itinerary" class="bg-white p-5 rounded-2xl shadow-sm border border-cloud-hover hover:shadow-md hover:-translate-y-1 transition duration-300 flex items-center gap-4 group">
-                <div class="w-12 h-12 rounded-xl bg-mocha-soft text-mocha flex items-center justify-center text-xl group-hover:bg-mocha group-hover:text-white transition">
-                    <i class="fa-solid fa-route"></i>
-                </div>
-                <div>
-                    <h3 class="font-bold text-base text-darkwood group-hover:text-mocha transition">行程規劃</h3>
-                    <p class="text-xs text-darkwood-light mt-0.5">京阪 5日/3日 觀光提案</p>
-                </div>
-            </a>
+                          <h3 className="font-bold text-base text-[#4A3B32]">
+                            {spot.name}
+                          </h3>
 
-            <a href="#shopping-map" class="bg-white p-5 rounded-2xl shadow-sm border border-cloud-hover hover:shadow-md hover:-translate-y-1 transition duration-300 flex items-center gap-4 group">
-                <div class="w-12 h-12 rounded-xl bg-mocha-soft text-mocha flex items-center justify-center text-xl group-hover:bg-mocha group-hover:text-white transition">
-                    <i class="fa-solid fa-map-location-dot"></i>
-                </div>
-                <div>
-                    <h3 class="font-bold text-base text-darkwood group-hover:text-mocha transition">逛街地圖</h3>
-                    <p class="text-xs text-darkwood-light mt-0.5">梅田 / 難波 / 京都車站</p>
-                </div>
-            </a>
+                          {spot.address && (
+                            <p className="text-[11px] text-[#8C7A6B]">
+                              {spot.address}
+                            </p>
+                          )}
 
-            <a href="#shopping-buys" class="bg-white p-5 rounded-2xl shadow-sm border border-cloud-hover hover:shadow-md hover:-translate-y-1 transition duration-300 flex items-center gap-4 group">
-                <div class="w-12 h-12 rounded-xl bg-mocha-soft text-mocha flex items-center justify-center text-xl group-hover:bg-mocha group-hover:text-white transition">
-                    <i class="fa-solid fa-bag-shopping"></i>
-                </div>
-                <div>
-                    <h3 class="font-bold text-base text-darkwood group-hover:text-mocha transition">購物必買</h3>
-                    <p class="text-xs text-darkwood-light mt-0.5">限定伴手禮與藥妝指南</p>
-                </div>
-            </a>
-
-            <a href="#toolkit" class="bg-white p-5 rounded-2xl shadow-sm border border-cloud-hover hover:shadow-md hover:-translate-y-1 transition duration-300 flex items-center gap-4 group">
-                <div class="w-12 h-12 rounded-xl bg-mocha-soft text-mocha flex items-center justify-center text-xl group-hover:bg-mocha group-hover:text-white transition">
-                    <i class="fa-solid fa-toolbox"></i>
-                </div>
-                <div>
-                    <h3 class="font-bold text-base text-darkwood group-hover:text-mocha transition">實用工具</h3>
-                    <p class="text-xs text-darkwood-light mt-0.5">即時匯率與備忘清單</p>
-                </div>
-            </a>
-        </div>
-    </section>
-
-    <!-- SECTION 1: 精選行程指南 (Featured Itineraries) -->
-    <section id="itinerary" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8">
-            <div>
-                <span class="text-xs font-bold text-mocha tracking-widest uppercase">Itinerary Guides</span>
-                <h2 class="text-2xl sm:text-3xl font-bold font-serif text-darkwood mt-1">熱門目的地與精選行程</h2>
-            </div>
-            <a href="#" class="mt-3 md:mt-0 text-sm font-semibold text-mocha hover:text-mocha-dark transition flex items-center gap-1">
-                查看所有行程指南 <i class="fa-solid fa-arrow-right text-xs"></i>
-            </a>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Card 1 -->
-            <div class="bg-white rounded-2xl overflow-hidden border border-cloud-hover shadow-sm hover:shadow-xl transition duration-300 flex flex-col group">
-                <div class="relative h-56 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=800&auto=format&fit=crop" alt="京都東山" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                    <span class="absolute top-4 left-4 bg-darkwood/80 text-white text-xs px-3 py-1 rounded-full backdrop-blur-md">
-                        <i class="fa-solid fa-location-dot text-mocha-light mr-1"></i> 京都 Kyoto
-                    </span>
-                    <button class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-darkwood hover:text-mocha transition">
-                        <i class="fa-regular fa-heart"></i>
-                    </button>
-                </div>
-                <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
-                    <div>
-                        <div class="flex items-center gap-2 text-xs text-darkwood-light mb-2">
-                            <span><i class="fa-regular fa-clock"></i> 1日散策</span>
-                            <span>•</span>
-                            <span class="text-accent-amber font-medium"><i class="fa-solid fa-star"></i> 4.9 (128)</span>
-                        </div>
-                        <h3 class="font-bold text-lg text-darkwood group-hover:text-mocha transition leading-snug">
-                            京都市區經典散策：清水寺、三年坂、祇園花見小路與鴨川晚霞
-                        </h3>
-                        <p class="text-xs text-darkwood-muted mt-2 line-clamp-2">
-                            走訪京都千年古都精華路線，穿著和服穿梭於傳統町家小徑，品嚐在地抹茶料理與湯豆腐。
-                        </p>
-                    </div>
-                    <div class="pt-4 border-t border-cloud-hover flex items-center justify-between">
-                        <div>
-                            <span class="text-xs text-darkwood-light">行程預估開銷</span>
-                            <div class="text-lg font-bold text-darkwood">NT$ 1,850 <span class="text-xs font-normal text-darkwood-light">/人</span></div>
-                        </div>
-                        <a href="index.html" class="px-4 py-2 bg-mocha-soft text-mocha font-semibold text-xs rounded-xl group-hover:bg-mocha group-hover:text-white transition">
-                            查看詳細行程
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 2 -->
-            <div class="bg-white rounded-2xl overflow-hidden border border-cloud-hover shadow-sm hover:shadow-xl transition duration-300 flex flex-col group">
-                <div class="relative h-56 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1590559899731-a382839e5549?q=80&w=800&auto=format&fit=crop" alt="大阪心齋橋" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                    <span class="absolute top-4 left-4 bg-darkwood/80 text-white text-xs px-3 py-1 rounded-full backdrop-blur-md">
-                        <i class="fa-solid fa-location-dot text-mocha-light mr-1"></i> 大阪 Osaka
-                    </span>
-                    <button class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-darkwood hover:text-mocha transition">
-                        <i class="fa-regular fa-heart"></i>
-                    </button>
-                </div>
-                <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
-                    <div>
-                        <div class="flex items-center gap-2 text-xs text-darkwood-light mb-2">
-                            <span><i class="fa-regular fa-clock"></i> 2日購物時尚</span>
-                            <span>•</span>
-                            <span class="text-accent-amber font-medium"><i class="fa-solid fa-star"></i> 4.8 (95)</span>
-                        </div>
-                        <h3 class="font-bold text-lg text-darkwood group-hover:text-mocha transition leading-snug">
-                            大阪都市魅力：難波心齋橋潮牌巡禮與中之島水上美術館
-                        </h3>
-                        <p class="text-xs text-darkwood-muted mt-2 line-clamp-2">
-                            體驗水都大阪時尚魅力！包含梅田展望台夜景、中之島綠意藝文特區與難波美食黑門市場。
-                        </p>
-                    </div>
-                    <div class="pt-4 border-t border-cloud-hover flex items-center justify-between">
-                        <div>
-                            <span class="text-xs text-darkwood-light">行程預估開銷</span>
-                            <div class="text-lg font-bold text-darkwood">NT$ 2,400 <span class="text-xs font-normal text-darkwood-light">/人</span></div>
-                        </div>
-                        <a href="#" class="px-4 py-2 bg-mocha-soft text-mocha font-semibold text-xs rounded-xl group-hover:bg-mocha group-hover:text-white transition">
-                            查看詳細行程
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="bg-white rounded-2xl overflow-hidden border border-cloud-hover shadow-sm hover:shadow-xl transition duration-300 flex flex-col group">
-                <div class="relative h-56 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1503899036084-c55cdd92da26?q=80&w=800&auto=format&fit=crop" alt="嵐山竹林" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                    <span class="absolute top-4 left-4 bg-darkwood/80 text-white text-xs px-3 py-1 rounded-full backdrop-blur-md">
-                        <i class="fa-solid fa-location-dot text-mocha-light mr-1"></i> 郊區秘境 Nature
-                    </span>
-                    <button class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-darkwood hover:text-mocha transition">
-                        <i class="fa-regular fa-heart"></i>
-                    </button>
-                </div>
-                <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
-                    <div>
-                        <div class="flex items-center gap-2 text-xs text-darkwood-light mb-2">
-                            <span><i class="fa-regular fa-clock"></i> 1日自然輕旅行</span>
-                            <span>•</span>
-                            <span class="text-accent-amber font-medium"><i class="fa-solid fa-star"></i> 4.9 (210)</span>
-                        </div>
-                        <h3 class="font-bold text-lg text-darkwood group-hover:text-mocha transition leading-snug">
-                            自然秘境漫遊：箕面大瀑布步道與嵐山嵯峨野觀光小火車
-                        </h3>
-                        <p class="text-xs text-darkwood-muted mt-2 line-clamp-2">
-                            遠離喧囂！感受竹林小路芬多精、天龍寺庭園造景，並品嚐箕面特色炸楓葉與嵐山甜點。
-                        </p>
-                    </div>
-                    <div class="pt-4 border-t border-cloud-hover flex items-center justify-between">
-                        <div>
-                            <span class="text-xs text-darkwood-light">行程預估開銷</span>
-                            <div class="text-lg font-bold text-darkwood">NT$ 1,500 <span class="text-xs font-normal text-darkwood-light">/人</span></div>
-                        </div>
-                        <a href="#" class="px-4 py-2 bg-mocha-soft text-mocha font-semibold text-xs rounded-xl group-hover:bg-mocha group-hover:text-white transition">
-                            查看詳細行程
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SECTION 2: 逛街地圖特輯 (Shopping Map Highlights) -->
-    <section id="shopping-map" class="bg-cloud-card py-16 border-y border-cloud-hover">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-12">
-                <span class="text-xs font-bold text-mocha tracking-widest uppercase">District Guides</span>
-                <h2 class="text-2xl sm:text-3xl font-bold font-serif text-darkwood mt-1">京阪熱門逛街商圈地圖</h2>
-                <p class="text-xs sm:text-sm text-darkwood-light mt-2">
-                    精選繁華商圈與在地古著雜貨巷弄，附帶路線地圖導航與退稅攻略。
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Shopping Area 1 -->
-                <div class="bg-white rounded-2xl p-6 border border-cloud-hover shadow-sm hover:border-mocha transition group">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="w-10 h-10 rounded-xl bg-mocha-soft text-mocha flex items-center justify-center font-bold font-serif text-lg">01</span>
-                        <span class="text-xs px-2.5 py-1 rounded-md bg-cloud-base text-darkwood font-medium">現代百貨 & 地下街</span>
-                    </div>
-                    <h3 class="font-bold text-xl text-darkwood group-hover:text-mocha transition mb-2">梅田商圈 (Umeda District)</h3>
-                    <p class="text-xs text-darkwood-muted leading-relaxed mb-4">
-                        匯集阪急百貨、Grand Front Osaka 與 Lucua 百貨。適合尋找精品品牌、日本女裝與話題甜點專櫃。
-                    </p>
-                    <div class="space-y-2 text-xs border-t border-cloud-hover pt-4">
-                        <div class="flex items-center justify-between text-darkwood-light">
-                            <span><i class="fa-solid fa-train-subway text-mocha mr-1.5"></i> 交通方式</span>
-                            <span class="font-medium text-darkwood">JR 大阪站 / 地鐵梅田站</span>
-                        </div>
-                        <div class="flex items-center justify-between text-darkwood-light">
-                            <span><i class="fa-solid fa-thumbs-up text-mocha mr-1.5"></i> 推薦亮點</span>
-                            <span class="font-medium text-darkwood">阪急甜點街 / 摩天輪夜景</span>
-                        </div>
-                    </div>
-                    <a href="https://maps.google.com/?q=Umeda+Osaka" target="_blank" class="mt-5 w-full py-2.5 bg-cloud-base hover:bg-mocha hover:text-white text-darkwood text-xs rounded-xl font-semibold transition flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-map-location-dot"></i> 開啟梅田地圖導航
-                    </a>
-                </div>
-
-                <!-- Shopping Area 2 -->
-                <div class="bg-white rounded-2xl p-6 border border-cloud-hover shadow-sm hover:border-mocha transition group">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="w-10 h-10 rounded-xl bg-mocha-soft text-mocha flex items-center justify-center font-bold font-serif text-lg">02</span>
-                        <span class="text-xs px-2.5 py-1 rounded-md bg-cloud-base text-darkwood font-medium">潮流古著 & 藥妝美食</span>
-                    </div>
-                    <h3 class="font-bold text-xl text-darkwood group-hover:text-mocha transition mb-2">難波與心齋橋 (Namba)</h3>
-                    <p class="text-xs text-darkwood-muted leading-relaxed mb-4">
-                        大阪最著名的購物天堂！從心齋橋筋商店街到美國村獨立潮流小店，兼具動漫玩具與藥妝旗艦店。
-                    </p>
-                    <div class="space-y-2 text-xs border-t border-cloud-hover pt-4">
-                        <div class="flex items-center justify-between text-darkwood-light">
-                            <span><i class="fa-solid fa-train-subway text-mocha mr-1.5"></i> 交通方式</span>
-                            <span class="font-medium text-darkwood">Osaka Metro 心齋橋站</span>
-                        </div>
-                        <div class="flex items-center justify-between text-darkwood-light">
-                            <span><i class="fa-solid fa-thumbs-up text-mocha mr-1.5"></i> 推薦亮點</span>
-                            <span class="font-medium text-darkwood">跑跑人看板 / 固力果 / 藥妝</span>
-                        </div>
-                    </div>
-                    <a href="https://maps.google.com/?q=Shinsaibashi+Osaka" target="_blank" class="mt-5 w-full py-2.5 bg-cloud-base hover:bg-mocha hover:text-white text-darkwood text-xs rounded-xl font-semibold transition flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-map-location-dot"></i> 開啟心齋橋地圖導航
-                    </a>
-                </div>
-
-                <!-- Shopping Area 3 -->
-                <div class="bg-white rounded-2xl p-6 border border-cloud-hover shadow-sm hover:border-mocha transition group">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="w-10 h-10 rounded-xl bg-mocha-soft text-mocha flex items-center justify-center font-bold font-serif text-lg">03</span>
-                        <span class="text-xs px-2.5 py-1 rounded-md bg-cloud-base text-darkwood font-medium">古都工藝 & 伴手禮</span>
-                    </div>
-                    <h3 class="font-bold text-xl text-darkwood group-hover:text-mocha transition mb-2">京都車站與伊勢丹 (JR Kyoto)</h3>
-                    <p class="text-xs text-darkwood-muted leading-relaxed mb-4">
-                        連通 JR 京都站的大型購物中心，地下 1 樓集結所有京都傳統名點、宇治抹茶餅乾與職人隨身小物件。
-                    </p>
-                    <div class="space-y-2 text-xs border-t border-cloud-hover pt-4">
-                        <div class="flex items-center justify-between text-darkwood-light">
-                            <span><i class="fa-solid fa-train-subway text-mocha mr-1.5"></i> 交通方式</span>
-                            <span class="font-medium text-darkwood">JR / 近鐵 京都站直結</span>
-                        </div>
-                        <div class="flex items-center justify-between text-darkwood-light">
-                            <span><i class="fa-solid fa-thumbs-up text-mocha mr-1.5"></i> 推薦亮點</span>
-                            <span class="font-medium text-darkwood">JR 伊勢丹 B1F / 辻利抹茶</span>
-                        </div>
-                    </div>
-                    <a href="https://maps.google.com/?q=Kyoto+Station+Isetan" target="_blank" class="mt-5 w-full py-2.5 bg-cloud-base hover:bg-mocha hover:text-white text-darkwood text-xs rounded-xl font-semibold transition flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-map-location-dot"></i> 開啟京都車站地圖
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SECTION 3: 購物推薦與必買清單 (Shopping Must-Buys) -->
-    <section id="shopping-buys" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8">
-            <div>
-                <span class="text-xs font-bold text-mocha tracking-widest uppercase">Souvenirs & Products</span>
-                <h2 class="text-2xl sm:text-3xl font-bold font-serif text-darkwood mt-1">日本限定購物與必買清單</h2>
-            </div>
-            <a href="#" class="mt-3 md:mt-0 text-sm font-semibold text-mocha hover:text-mocha-dark transition flex items-center gap-1">
-                檢視完整伴手禮指南 <i class="fa-solid fa-arrow-right text-xs"></i>
-            </a>
-        </div>
-
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Product Item 1 -->
-            <div class="bg-white rounded-2xl p-4 border border-cloud-hover shadow-sm hover:shadow-md transition flex flex-col justify-between group">
-                <div>
-                    <div class="relative h-40 rounded-xl overflow-hidden mb-3 bg-cloud-base flex items-center justify-center">
-                        <img src="https://images.unsplash.com/photo-1582716401301-82269944e4a5?q=80&w=400&auto=format&fit=crop" alt="京都宇治抹茶餅乾" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        <span class="absolute top-2 left-2 bg-accent-amber text-white text-[10px] px-2 py-0.5 rounded font-bold">京都熱銷 #1</span>
-                    </div>
-                    <span class="text-[10px] font-bold text-mocha uppercase tracking-wider">京都名產 / 甜點</span>
-                    <h4 class="font-bold text-sm text-darkwood group-hover:text-mocha transition mt-1">宇治抹茶夾心薄餅 (12入)</h4>
-                    <p class="text-xs text-darkwood-light mt-1">濃郁宇治茶香搭配酥脆餅乾，獨立包裝送禮首選。</p>
-                </div>
-                <div class="mt-4 pt-3 border-t border-cloud-hover flex items-center justify-between">
-                    <div>
-                        <span class="text-[10px] text-darkwood-light block">參考售價</span>
-                        <span class="font-bold text-sm text-darkwood">¥ 1,512 <span class="text-[10px] text-darkwood-light font-normal">(約 NT$ 325)</span></span>
-                    </div>
-                    <button class="w-8 h-8 rounded-lg bg-cloud-base hover:bg-mocha hover:text-white transition flex items-center justify-center text-xs">
-                        <i class="fa-solid fa-plus"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Product Item 2 -->
-            <div class="bg-white rounded-2xl p-4 border border-cloud-hover shadow-sm hover:shadow-md transition flex flex-col justify-between group">
-                <div>
-                    <div class="relative h-40 rounded-xl overflow-hidden mb-3 bg-cloud-base flex items-center justify-center">
-                        <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=400&auto=format&fit=crop" alt="日本限定保濕面膜" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        <span class="absolute top-2 left-2 bg-bamboo-600 text-white text-[10px] px-2 py-0.5 rounded font-bold">藥妝店必買</span>
-                    </div>
-                    <span class="text-[10px] font-bold text-mocha uppercase tracking-wider">藥妝護膚 / 美妝</span>
-                    <h4 class="font-bold text-sm text-darkwood group-hover:text-mocha transition mt-1">酒粕美容高保濕面膜 (10片裝)</h4>
-                    <p class="text-xs text-darkwood-light mt-1">吟釀酒粕精華，亮白保濕敷出好氣色。</p>
-                </div>
-                <div class="mt-4 pt-3 border-t border-cloud-hover flex items-center justify-between">
-                    <div>
-                        <span class="text-[10px] text-darkwood-light block">參考售價</span>
-                        <span class="font-bold text-sm text-darkwood">¥ 880 <span class="text-[10px] text-darkwood-light font-normal">(約 NT$ 190)</span></span>
-                    </div>
-                    <button class="w-8 h-8 rounded-lg bg-cloud-base hover:bg-mocha hover:text-white transition flex items-center justify-center text-xs">
-                        <i class="fa-solid fa-plus"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Product Item 3 -->
-            <div class="bg-white rounded-2xl p-4 border border-cloud-hover shadow-sm hover:shadow-md transition flex flex-col justify-between group">
-                <div>
-                    <div class="relative h-40 rounded-xl overflow-hidden mb-3 bg-cloud-base flex items-center justify-center">
-                        <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=400&auto=format&fit=crop" alt="職人印花帆布袋" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                    </div>
-                    <span class="text-[10px] font-bold text-mocha uppercase tracking-wider">京都工藝 / 雜貨</span>
-                    <h4 class="font-bold text-sm text-darkwood group-hover:text-mocha transition mt-1">一澤信三郎手工帆布托特包</h4>
-                    <p class="text-xs text-darkwood-light mt-1">京都百年老店職人純手作，極致耐用與經典質感。</p>
-                </div>
-                <div class="mt-4 pt-3 border-t border-cloud-hover flex items-center justify-between">
-                    <div>
-                        <span class="text-[10px] text-darkwood-light block">參考售價</span>
-                        <span class="font-bold text-sm text-darkwood">¥ 8,800 <span class="text-[10px] text-darkwood-light font-normal">(約 NT$ 1,890)</span></span>
-                    </div>
-                    <button class="w-8 h-8 rounded-lg bg-cloud-base hover:bg-mocha hover:text-white transition flex items-center justify-center text-xs">
-                        <i class="fa-solid fa-plus"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Product Item 4 -->
-            <div class="bg-white rounded-2xl p-4 border border-cloud-hover shadow-sm hover:shadow-md transition flex flex-col justify-between group">
-                <div>
-                    <div class="relative h-40 rounded-xl overflow-hidden mb-3 bg-cloud-base flex items-center justify-center">
-                        <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=400&auto=format&fit=crop" alt="大阪章魚燒風味餅乾" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                    </div>
-                    <span class="text-[10px] font-bold text-mocha uppercase tracking-wider">大阪限定 / 零食</span>
-                    <h4 class="font-bold text-sm text-darkwood group-hover:text-mocha transition mt-1">大阪章魚燒風味脆仙貝 (大盒)</h4>
-                    <p class="text-xs text-darkwood-light mt-1">道地章魚燒醬香與柴魚片完美結合，辦公室熱門分享禮。</p>
-                </div>
-                <div class="mt-4 pt-3 border-t border-cloud-hover flex items-center justify-between">
-                    <div>
-                        <span class="text-[10px] text-darkwood-light block">參考售價</span>
-                        <span class="font-bold text-sm text-darkwood">¥ 1,200 <span class="text-[10px] text-darkwood-light font-normal">(約 NT$ 258)</span></span>
-                    </div>
-                    <button class="w-8 h-8 rounded-lg bg-cloud-base hover:bg-mocha hover:text-white transition flex items-center justify-center text-xs">
-                        <i class="fa-solid fa-plus"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SECTION 4: 旅遊實用工具箱 (Travel Toolkit Preview) -->
-    <section id="toolkit" class="bg-cloud-card py-16 border-t border-cloud-hover">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8">
-                <div>
-                    <span class="text-xs font-bold text-mocha tracking-widest uppercase">Travel Toolkit</span>
-                    <h2 class="text-2xl sm:text-3xl font-bold font-serif text-darkwood mt-1">旅人隨行小助手與工具箱</h2>
-                </div>
-                <p class="text-xs text-darkwood-light mt-2 md:mt-0">
-                    隨時算匯率、勾選行前準備清單，讓旅程更加無憂順暢。
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Tool 1: 即時日圓匯率計算器 -->
-                <div class="bg-white rounded-2xl p-6 border border-cloud-hover shadow-sm space-y-4">
-                    <div class="flex items-center justify-between">
-                        <h3 class="font-bold text-base text-darkwood flex items-center gap-2">
-                            <i class="fa-solid fa-calculator text-mocha"></i>
-                            日圓 ↔ 新台幣 (JPY/TWD) 匯率計算
-                        </h3>
-                        <span class="text-[10px] bg-mocha-soft text-mocha font-bold px-2.5 py-1 rounded-md">即時預設 0.215</span>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="bg-cloud-base p-3 rounded-xl border border-cloud-hover">
-                            <label class="block text-[10px] font-bold text-darkwood-light uppercase">日幣金額 (JPY ¥)</label>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span class="text-base font-bold text-mocha">¥</span>
-                                <input type="number" id="toolkit-jpy" placeholder="例如 10000" value="10000" class="w-full text-base font-bold text-darkwood bg-transparent focus:outline-none">
+                          {spot.notes && (
+                            <div className="bg-[#FBF9F5] p-3 rounded-xl border border-[#F0EEE9] text-xs text-[#59483E] leading-relaxed">
+                              {spot.notes}
                             </div>
+                          )}
+
+                          <div className="pt-2 flex items-center justify-between border-t border-[#F0EEE9]">
+                            <span className="text-[11px] text-[#8C7A6B] flex items-center gap-1">
+                              <i data-lucide="train" className="w-3.5 h-3.5"></i> 
+                              {prevSpot ? `前一站：${prevSpot.name.slice(0, 8)}...` : '當日第一站'}
+                            </span>
+                            
+                            <a
+                              href={directionsUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-xs bg-[#8C7A6B] text-white hover:bg-[#786458] px-3 py-1.5 rounded-lg font-medium shadow-xs transition-colors"
+                            >
+                              <i data-lucide="navigation" className="w-3 h-3"></i> 路線規劃 & 時間
+                            </a>
+                          </div>
                         </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
-                        <div class="bg-cloud-base p-3 rounded-xl border border-cloud-hover">
-                            <label class="block text-[10px] font-bold text-darkwood-light uppercase">折合新台幣 (TWD NT$)</label>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span class="text-base font-bold text-mocha">NT$</span>
-                                <input type="number" id="toolkit-twd" value="2150" class="w-full text-base font-bold text-darkwood bg-transparent focus:outline-none">
-                            </div>
-                        </div>
+            {/* TAB 2: 逛街 */}
+            {activeTab === 'shopping' && (
+              <div className="space-y-4">
+                <div className="bg-white p-4 rounded-2xl border border-[#E5E1DA]">
+                  <h3 className="font-bold text-sm text-[#4A3B32] mb-2 flex items-center gap-2">
+                    <i data-lucide="shopping-bag" className="w-4 h-4 text-[#8C7A6B]"></i> 京阪採購精選商圈
+                  </h3>
+                  <div className="space-y-3 text-xs">
+                    <div className="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
+                      <div className="font-bold text-[#59483E] text-sm">JR 京都伊勢丹 B1F</div>
+                      <div className="text-[#8C7A6B] mt-1">JR 京都站直通！匯集京都各大經典老鋪和菓子、伴手禮、便當與甜點。</div>
                     </div>
-                    <p class="text-[11px] text-darkwood-light text-right">
-                        💡 貼心提醒：此為換算參考值，實際請以信用卡開戶銀行當日掛牌匯率為準。
-                    </p>
+                    <div className="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
+                      <div className="font-bold text-[#59483E] text-sm">難波 & 心齋橋 & 道頓堀商圈</div>
+                      <div className="text-[#8C7A6B] mt-1">大阪最熱鬧地段！藥妝店、服飾、PARCO、高島屋與道頓堀章魚燒美食。</div>
+                    </div>
+                    <div className="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
+                      <div className="font-bold text-[#59483E] text-sm">梅田商圈 (LUCUA / GRAND FRONT / 阪急)</div>
+                      <div className="text-[#8C7A6B] mt-1">現代化高級百貨匯集地，精緻品牌服飾、日系雜貨與 Yodobashi 電器旗艦館。</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 3: 美食 */}
+            {activeTab === 'dining' && (
+              <div className="space-y-4">
+                <div className="bg-white p-4 rounded-2xl border border-[#E5E1DA]">
+                  <h3 className="font-bold text-sm text-[#4A3B32] mb-2 flex items-center gap-2">
+                    <i data-lucide="utensils" className="w-4 h-4 text-[#8C7A6B]"></i> 精選美食必吃
+                  </h3>
+                  <div className="space-y-2 text-xs">
+                    <div className="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
+                      <div className="font-bold text-[#59483E]">JR 京都伊勢丹 B1F 和菓子美食街</div>
+                      <div className="text-[#8C7A6B] mt-0.5">匯集京都老字號伴手禮與極致美味的熟食便當。</div>
+                    </div>
+                    <div className="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
+                      <div className="font-bold text-[#59483E]">道頓堀章魚燒與大阪燒</div>
+                      <div className="text-[#8C7A6B] mt-0.5">經典道地大阪小吃，夜間氛圍超熱鬧。</div>
+                    </div>
+                    <div className="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
+                      <div className="font-bold text-[#59483E]">中之島圖書館 咖啡館 (Smørrebrød)</div>
+                      <div className="text-[#8C7A6B] mt-0.5">古蹟建物內享用精緻丹麥開放式三明治。</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 4: 清單 */}
+            {activeTab === 'checklist' && (
+              <div className="space-y-4">
+                <div className="bg-white p-4 rounded-2xl border border-[#E5E1DA]">
+                  <h3 className="font-bold text-sm text-[#4A3B32] mb-3 flex items-center gap-2">
+                    <i data-lucide="check-square" className="w-4 h-4 text-[#8C7A6B]"></i> 必買紀念品與藥妝清單
+                  </h3>
+                  <div className="space-y-2 text-xs">
+                    <label className="flex items-center gap-2 p-2.5 bg-[#FBF9F5] rounded-xl cursor-pointer">
+                      <input type="checkbox" className="rounded text-[#8C7A6B]" />
+                      <span>JR 京都伊勢丹 B1F 甜點與老鋪伴手禮</span>
+                    </label>
+                    <label className="flex items-center gap-2 p-2.5 bg-[#FBF9F5] rounded-xl cursor-pointer">
+                      <input type="checkbox" className="rounded text-[#8C7A6B]" />
+                      <span>勝尾寺 迷你勝運達摩不倒翁</span>
+                    </label>
+                    <label className="flex items-center gap-2 p-2.5 bg-[#FBF9F5] rounded-xl cursor-pointer">
+                      <input type="checkbox" className="rounded text-[#8C7A6B]" />
+                      <span>護王神社 足腰守護御守</span>
+                    </label>
+                    <label className="flex items-center gap-2 p-2.5 bg-[#FBF9F5] rounded-xl cursor-pointer">
+                      <input type="checkbox" className="rounded text-[#8C7A6B]" />
+                      <span>御金神社 洗錢財運御守</span>
+                    </label>
+                    <label className="flex items-center gap-2 p-2.5 bg-[#FBF9F5] rounded-xl cursor-pointer">
+                      <input type="checkbox" className="rounded text-[#8C7A6B]" />
+                      <span>市比賣神社 姬神籤 (姫みくじ)</span>
+                    </label>
+                    <label className="flex items-center gap-2 p-2.5 bg-[#FBF9F5] rounded-xl cursor-pointer">
+                      <input type="checkbox" className="rounded text-[#8C7A6B]" />
+                      <span>日系藥妝保養品與梅田百貨精品</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 5: 工具 */}
+            {activeTab === 'tools' && (
+              <div className="space-y-4">
+                <div className="bg-white p-4 rounded-2xl border border-[#E5E1DA]">
+                  <h3 className="font-bold text-sm text-[#4A3B32] mb-2 flex items-center gap-2">
+                    <i data-lucide="sun-snow" className="w-4 h-4 text-blue-600"></i> 2月/3月 天氣與防雪提示
+                  </h3>
+                  <p className="text-xs text-[#6E5D53] leading-relaxed">
+                    2 月底氣溫約 2°C - 10°C。貴船神社（洛北山區）極高機率積雪結冰，請穿著防滑保暖鞋款與厚外套。
+                  </p>
+                </div>
+                <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#E5E1DA]">
+                  <h3 className="font-bold text-sm text-[#4A3B32] mb-2 flex items-center gap-2">
+                    <i data-lucide="train" className="w-4 h-4 text-[#8C7A6B]"></i> 交通票券說明
+                  </h3>
+                  <p className="text-xs text-[#6E5D53] leading-relaxed">
+                    全程使用 <strong>ICOCA</strong> 刷卡搭乘地鐵、公車與阪急電車；關西機場往京都搭乘 <strong>JR HARUKA 特急</strong>，難波往關西機場搭乘 <strong>南海電鐵 Rapi:t</strong>。
+                  </p>
+                </div>
+              </div>
+            )}
+
+          </main>
+
+          {/* 新增景點 Modal */}
+          {showAddModal && (
+            <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
+              <div className="bg-white rounded-2xl w-full max-w-md p-5 border border-[#E5E1DA] shadow-xl space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-bold text-base text-[#4A3B32] flex items-center gap-2">
+                    <i data-lucide="plus" className="w-4 h-4 text-[#8C7A6B]"></i> 新增景點至 DAY {selectedDay}
+                  </h3>
+                  <button onClick={() => setShowAddModal(false)} className="text-stone-400 hover:text-stone-600 text-sm font-bold">✕</button>
                 </div>
 
-                <!-- Tool 2: 行程隨身必備清單 ( Checklist ) -->
-                <div class="bg-white rounded-2xl p-6 border border-cloud-hover shadow-sm space-y-4">
-                    <div class="flex items-center justify-between">
-                        <h3 class="font-bold text-base text-darkwood flex items-center gap-2">
-                            <i class="fa-solid fa-[#16a34a] fa-square-check text-bamboo-600"></i>
-                            日本行前物品準備 Check-list
-                        </h3>
-                        <span class="text-xs text-darkwood-light" id="homepage-progress">0/4 已準備</span>
+                <form onSubmit={handleCreateSpotSubmit} className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-bold text-[#6E5D53] mb-1">景點 / 地點名稱 *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="例如：錦市場 / 伏見稻荷大社"
+                      value={newSpotForm.name}
+                      onChange={(e) => setNewSpotForm({ ...newSpotForm, name: e.target.value })}
+                      className="w-full px-3 py-2 text-xs bg-[#FBF9F5] border border-[#E5E1DA] rounded-xl focus:outline-none focus:border-[#8C7A6B]"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-bold text-[#6E5D53] mb-1">預計時間</label>
+                      <input
+                        type="text"
+                        placeholder="例如 14:00"
+                        value={newSpotForm.time}
+                        onChange={(e) => setNewSpotForm({ ...newSpotForm, time: e.target.value })}
+                        className="w-full px-3 py-2 text-xs bg-[#FBF9F5] border border-[#E5E1DA] rounded-xl focus:outline-none focus:border-[#8C7A6B]"
+                      />
                     </div>
 
-                    <div class="space-y-2.5 text-xs">
-                        <label class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-cloud-base cursor-pointer transition">
-                            <input type="checkbox" class="home-chk w-4 h-4 rounded text-mocha focus:ring-mocha" onchange="calcHomeCheck()">
-                            <span class="font-medium text-darkwood">護照（效期6個月以上）與 Visit Japan Web 填寫 completed</span>
-                        </label>
-                        <label class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-cloud-base cursor-pointer transition">
-                            <input type="checkbox" class="home-chk w-4 h-4 rounded text-mocha focus:ring-mocha" onchange="calcHomeCheck()">
-                            <span class="font-medium text-darkwood">關西交通卡 (Suica / ICOCA) 手機 Wallet 已加值</span>
-                        </label>
-                        <label class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-cloud-base cursor-pointer transition">
-                            <input type="checkbox" class="home-chk w-4 h-4 rounded text-mocha focus:ring-mocha" onchange="calcHomeCheck()">
-                            <span class="font-medium text-darkwood">日圓現金（備妥部分小額零錢）與海外高回饋信用卡</span>
-                        </label>
-                        <label class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-cloud-base cursor-pointer transition">
-                            <input type="checkbox" class="home-chk w-4 h-4 rounded text-mocha focus:ring-mocha" onchange="calcHomeCheck()">
-                            <span class="font-medium text-darkwood">日本 eSIM 上網卡已完成設定並準備好 QR Code</span>
-                        </label>
+                    <div>
+                      <label className="block text-xs font-bold text-[#6E5D53] mb-1">分類標籤</label>
+                      <select
+                        value={newSpotForm.category}
+                        onChange={(e) => setNewSpotForm({ ...newSpotForm, category: e.target.value })}
+                        className="w-full px-3 py-2 text-xs bg-[#FBF9F5] border border-[#E5E1DA] rounded-xl focus:outline-none focus:border-[#8C7A6B]"
+                      >
+                        <option value="spot">旅 (景點)</option>
+                        <option value="food">食 (美食)</option>
+                        <option value="shop">購 (購物)</option>
+                        <option value="transport">交 (交通)</option>
+                        <option value="hotel">宿 (住宿)</option>
+                      </select>
                     </div>
-                </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-[#6E5D53] mb-1">地址 / 詳細地點</label>
+                    <input
+                      type="text"
+                      placeholder="例如：京都府京都市中京區..."
+                      value={newSpotForm.address}
+                      onChange={(e) => setNewSpotForm({ ...newSpotForm, address: e.target.value })}
+                      className="w-full px-3 py-2 text-xs bg-[#FBF9F5] border border-[#E5E1DA] rounded-xl focus:outline-none focus:border-[#8C7A6B]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-[#6E5D53] mb-1">備註說明</label>
+                    <textarea
+                      rows={2}
+                      placeholder="備註資訊、門票價格或注意事項..."
+                      value={newSpotForm.notes}
+                      onChange={(e) => setNewSpotForm({ ...newSpotForm, notes: e.target.value })}
+                      className="w-full p-3 text-xs bg-[#FBF9F5] border border-[#E5E1DA] rounded-xl focus:outline-none focus:border-[#8C7A6B] resize-none"
+                    />
+                  </div>
+
+                  <div className="flex justify-end gap-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowAddModal(false)}
+                      className="px-4 py-2 text-xs bg-[#E5E1DA] text-[#6E5D53] rounded-xl font-medium hover:bg-[#DCD7CE]"
+                    >
+                      取消
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-4 py-2 text-xs bg-[#8C7A6B] text-white rounded-xl font-bold hover:bg-[#786458]"
+                    >
+                      確認新增
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
+          )}
+
+          {/* 批量匯入 Modal */}
+          {showImportModal && (
+            <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
+              <div className="bg-white rounded-2xl w-full max-w-md p-5 border border-[#E5E1DA] shadow-xl space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-bold text-base text-[#4A3B32] flex items-center gap-2">
+                    <i data-lucide="file-text" className="w-4 h-4 text-[#8C7A6B]"></i> 匯入行程至 DAY {selectedDay}
+                  </h3>
+                  <button onClick={() => setShowImportModal(false)} className="text-stone-400 hover:text-stone-600 text-sm font-bold">✕</button>
+                </div>
+                
+                <p className="text-xs text-[#6E5D53]">
+                  每行輸入一個景點名稱（例：<code className="bg-[#F0EEE9] px-1.5 py-0.5 rounded text-[#4A3B32]">14:00 京都御所</code> 或 <code className="bg-[#F0EEE9] px-1.5 py-0.5 rounded text-[#4A3B32]">錦市場美食散策</code>）：
+                </p>
+
+                <textarea 
+                  rows={5}
+                  placeholder={`09:30 服部住吉神社\n11:30 勝尾寺\n14:00 箕面瀑布`}
+                  value={importText}
+                  onChange={(e) => setImportText(e.target.value)}
+                  className="w-full p-3 text-xs bg-[#FBF9F5] border border-[#E5E1DA] rounded-xl focus:outline-none focus:border-[#8C7A6B] font-mono resize-none"
+                />
+
+                <div className="flex justify-end gap-2 pt-2">
+                  <button
+                    onClick={() => setShowImportModal(false)}
+                    className="px-4 py-2 text-xs bg-[#E5E1DA] text-[#6E5D53] rounded-xl font-medium hover:bg-[#DCD7CE]"
+                  >
+                    取消
+                  </button>
+                  <button
+                    onClick={handleExecuteImport}
+                    className="px-4 py-2 text-xs bg-[#8C7A6B] text-white rounded-xl font-bold hover:bg-[#786458]"
+                  >
+                    確認匯入
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 底部導覽列 */}
+          <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-[#E5E1DA] z-40 shadow-lg">
+            <div className="max-w-xl mx-auto flex justify-around py-2">
+              <button
+                onClick={() => setActiveTab('itinerary')}
+                className={`flex flex-col items-center py-1 px-3 rounded-xl transition-all ${
+                  activeTab === 'itinerary' ? 'text-[#8C7A6B] font-bold' : 'text-stone-400'
+                }`}
+              >
+                <i data-lucide="calendar" className="w-5 h-5"></i>
+                <span className="text-[10px] mt-1">行程</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('shopping')}
+                className={`flex flex-col items-center py-1 px-3 rounded-xl transition-all ${
+                  activeTab === 'shopping' ? 'text-[#8C7A6B] font-bold' : 'text-stone-400'
+                }`}
+              >
+                <i data-lucide="shopping-bag" className="w-5 h-5"></i>
+                <span className="text-[10px] mt-1">商圈</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('dining')}
+                className={`flex flex-col items-center py-1 px-3 rounded-xl transition-all ${
+                  activeTab === 'dining' ? 'text-[#8C7A6B] font-bold' : 'text-stone-400'
+                }`}
+              >
+                <i data-lucide="utensils" className="w-5 h-5"></i>
+                <span className="text-[10px] mt-1">美食</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('checklist')}
+                className={`flex flex-col items-center py-1 px-3 rounded-xl transition-all ${
+                  activeTab === 'checklist' ? 'text-[#8C7A6B] font-bold' : 'text-stone-400'
+                }`}
+              >
+                <i data-lucide="check-square" className="w-5 h-5"></i>
+                <span className="text-[10px] mt-1">清單</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('tools')}
+                className={`flex flex-col items-center py-1 px-3 rounded-xl transition-all ${
+                  activeTab === 'tools' ? 'text-[#8C7A6B] font-bold' : 'text-stone-400'
+                }`}
+              >
+                <i data-lucide="wrench" className="w-5 h-5"></i>
+                <span className="text-[10px] mt-1">工具</span>
+              </button>
+            </div>
+          </nav>
+
         </div>
-    </section>
+      );
+    }
 
-    <!-- 頁尾 Footer -->
-    <footer class="bg-darkwood text-cloud-base pt-16 pb-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 border-b border-white/10 pb-12">
-                <!-- Column 1: Brand info -->
-                <div class="space-y-4">
-                    <div class="flex items-center gap-2">
-                        <div class="w-9 h-9 rounded-xl bg-mocha flex items-center justify-center text-white text-lg font-bold">J</div>
-                        <span class="font-serif text-2xl font-bold tracking-wider text-white">JOURNEY</span>
-                    </div>
-                    <p class="text-xs text-cloud-base/70 leading-relaxed">
-                        打造質感的京阪旅遊指南，協助每位旅人探索京都與大阪最獨特的風景、美食與購物地圖。
-                    </p>
-                    <div class="flex space-x-3 text-cloud-base/80">
-                        <a href="#" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-mocha transition"><i class="fa-brands fa-instagram text-xs"></i></a>
-                        <a href="#" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-mocha transition"><i class="fa-brands fa-facebook-f text-xs"></i></a>
-                        <a href="#" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-mocha transition"><i class="fa-brands fa-youtube text-xs"></i></a>
-                    </div>
-                </div>
-
-                <!-- Column 2: 核心服務 -->
-                <div>
-                    <h4 class="font-bold text-sm text-white uppercase tracking-wider mb-4">核心探索</h4>
-                    <ul class="space-y-2.5 text-xs text-cloud-base/70">
-                        <li><a href="#itinerary" class="hover:text-mocha-light transition">京阪經典行程指南</a></li>
-                        <li><a href="#shopping-map" class="hover:text-mocha-light transition">梅田與心齋橋逛街地圖</a></li>
-                        <li><a href="#shopping-buys" class="hover:text-mocha-light transition">日本必買藥妝與伴手禮</a></li>
-                        <li><a href="#toolkit" class="hover:text-mocha-light transition">即時匯率與旅行工具</a></li>
-                    </ul>
-                </div>
-
-                <!-- Column 3: 客服與常見問題 -->
-                <div>
-                    <h4 class="font-bold text-sm text-white uppercase tracking-wider mb-4">服務與支援</h4>
-                    <ul class="space-y-2.5 text-xs text-cloud-base/70">
-                        <li><a href="#" class="hover:text-mocha-light transition">常見問題 FAQ</a></li>
-                        <li><a href="#" class="hover:text-mocha-light transition">預約確認與退款政策</a></li>
-                        <li><a href="#" class="hover:text-mocha-light transition">緊急連絡與海外救助</a></li>
-                        <li><a href="#" class="hover:text-mocha-light transition">隱私權條款與服務條款</a></li>
-                    </ul>
-                </div>
-
-                <!-- Column 4: 電子報訂閱 -->
-                <div class="space-y-3">
-                    <h4 class="font-bold text-sm text-white uppercase tracking-wider">訂閱質感旅遊週報</h4>
-                    <p class="text-xs text-cloud-base/70">每週搶先獲取日本最新祭典、關西限定商品與隱藏版景點！</p>
-                    <form onsubmit="event.preventDefault();" class="space-y-2">
-                        <input type="email" placeholder="請輸入您的 Email 地址" class="w-full px-3 py-2.5 bg-white/10 text-xs text-white rounded-xl focus:outline-none border border-white/20 placeholder-cloud-base/40">
-                        <button type="submit" class="w-full py-2.5 bg-mocha hover:bg-mocha-dark text-white font-bold text-xs rounded-xl transition">
-                            免費訂閱週報
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-cloud-base/50">
-                <p>© 2026 JOURNEY Travel. All Rights Reserved. Designed with PANTONE Cloud Dancer & Mocha Mousse.</p>
-                <div class="mt-4 sm:mt-0 flex gap-4">
-                    <span>京阪自由行專業平台</span>
-                    <span>•</span>
-                    <span>繁體中文版</span>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Mobile-First 手機端底部固定導航欄 (Mobile Bottom Bar) -->
-    <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-cloud-hover px-4 py-2 flex justify-around items-center lg:hidden z-50 shadow-lg">
-        <a href="#itinerary" class="flex flex-col items-center gap-1 text-darkwood-muted hover:text-mocha text-[10px] font-medium">
-            <i class="fa-solid fa-route text-lg"></i> 行程
-        </a>
-        <a href="#shopping-map" class="flex flex-col items-center gap-1 text-darkwood-muted hover:text-mocha text-[10px] font-medium">
-            <i class="fa-solid fa-map-location-dot text-lg"></i> 逛街地圖
-        </a>
-        <a href="#shopping-buys" class="flex flex-col items-center gap-1 text-darkwood-muted hover:text-mocha text-[10px] font-medium">
-            <i class="fa-solid fa-bag-shopping text-lg"></i> 購物
-        </a>
-        <a href="#toolkit" class="flex flex-col items-center gap-1 text-darkwood-muted hover:text-mocha text-[10px] font-medium">
-            <i class="fa-solid fa-toolbox text-lg"></i> 工具
-        </a>
-    </div>
-
-    <!-- JavaScript 邏輯與互動 -->
-    <script>
-        // 1. 搜尋引擎分頁切換 Tabs
-        function switchSearchTab(tabName) {
-            const tabs = document.querySelectorAll('.search-tab-btn');
-            tabs.forEach(tab => {
-                tab.classList.remove('bg-mocha', 'text-white', 'shadow-sm');
-                tab.classList.add('text-cloud-base', 'hover:text-white', 'hover:bg-white/10');
-            });
-
-            const activeTab = document.getElementById(`tab-${tabName}`);
-            if (activeTab) {
-                activeTab.classList.remove('text-cloud-base', 'hover:text-white', 'hover:bg-white/10');
-                activeTab.classList.add('bg-mocha', 'text-white', 'shadow-sm');
-            }
-
-            const input = document.getElementById('search-input');
-            if (tabName === 'hotel') input.placeholder = '例如：京都站、心齋橋、清水寺飯店';
-            else if (tabName === 'tour') input.placeholder = '例如：嵐山小火車、和服體驗、抹茶手作';
-            else if (tabName === 'ticket') input.placeholder = '例如：HARUKA 特快、南海電鐵、JR 關西 Pass';
-            else if (tabName === 'pass') input.placeholder = '例如：大阪環球影城、梅田藍天大廈展望台';
-        }
-
-        // 2. 工具箱：即時匯率連動 (預設 0.215)
-        const exchangeRate = 0.215;
-        const jpyInput = document.getElementById('toolkit-jpy');
-        const twdInput = document.getElementById('toolkit-twd');
-
-        if (jpyInput && twdInput) {
-            jpyInput.addEventListener('input', function() {
-                const jpy = parseFloat(this.value);
-                twdInput.value = !isNaN(jpy) ? Math.round(jpy * exchangeRate) : '';
-            });
-
-            twdInput.addEventListener('input', function() {
-                const twd = parseFloat(this.value);
-                jpyInput.value = !isNaN(twd) ? Math.round(twd / exchangeRate) : '';
-            });
-        }
-
-        // 3. 首頁簡單行前清單計算器
-        function calcHomeCheck() {
-            const boxes = document.querySelectorAll('.home-chk');
-            let count = 0;
-            boxes.forEach(b => { if (b.checked) count++; });
-            const progress = document.getElementById('homepage-progress');
-            if (progress) progress.innerText = `${count}/${boxes.length} 已準備`;
-        }
-    </script>
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
 </body>
 </html>
