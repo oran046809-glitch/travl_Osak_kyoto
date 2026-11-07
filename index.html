@@ -8,13 +8,6 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- React & ReactDOM CDN -->
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  
-  <!-- Babel for JSX Compilation (Required for Github Pages single-file execution) -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -30,15 +23,87 @@
     body {
       -webkit-tap-highlight-color: transparent;
       user-select: none;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
     }
   </style>
 </head>
 <body class="bg-[#F0EEE9] text-[#4A3B32]">
-  <div id="root"></div>
+  <div id="app">
+    <!-- Header -->
+    <header class="bg-[#4A3B32] text-white px-5 py-4 shadow-md sticky top-0 z-30">
+      <div class="max-w-xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-[#8C7A6B] flex items-center justify-center font-bold text-base shadow-inner">
+            京
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="font-bold text-lg tracking-wide">2027 京阪 8天7夜 ✨</h1>
+              <span class="text-[11px] bg-white/15 px-2 py-0.5 rounded-full font-mono text-stone-200">
+                2/24 - 3/3
+              </span>
+            </div>
+            <p class="text-[11px] text-[#C2A698] font-mono tracking-wider mt-0.5">
+              PANTONE Cloud Dancer x Mocha Mousse
+            </p>
+          </div>
+        </div>
+      </div>
+    </header>
 
-  <script type="text/babel">
-    const { useState, useEffect } = React;
+    <!-- Main Container -->
+    <main id="main-content" class="max-w-xl mx-auto px-4 pt-4 pb-28">
+      <!-- 內容由原生 JavaScript 動態渲染 -->
+    </main>
 
+    <!-- 底部導覽列 -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-[#E5E1DA] z-40 shadow-lg">
+      <div class="max-w-xl mx-auto flex justify-around py-2">
+        <button
+          onclick="switchTab('itinerary')"
+          id="nav-itinerary"
+          class="nav-btn flex flex-col items-center py-1 px-3 rounded-xl transition-all text-[#8C7A6B] font-bold cursor-pointer"
+        >
+          <i data-lucide="calendar" class="w-5 h-5"></i>
+          <span class="text-[10px] mt-1">行程</span>
+        </button>
+        <button
+          onclick="switchTab('shopping')"
+          id="nav-shopping"
+          class="nav-btn flex flex-col items-center py-1 px-3 rounded-xl transition-all text-stone-400 cursor-pointer"
+        >
+          <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+          <span class="text-[10px] mt-1">商圈</span>
+        </button>
+        <button
+          onclick="switchTab('dining')"
+          id="nav-dining"
+          class="nav-btn flex flex-col items-center py-1 px-3 rounded-xl transition-all text-stone-400 cursor-pointer"
+        >
+          <i data-lucide="utensils" class="w-5 h-5"></i>
+          <span class="text-[10px] mt-1">美食</span>
+        </button>
+        <button
+          onclick="switchTab('checklist')"
+          id="nav-checklist"
+          class="nav-btn flex flex-col items-center py-1 px-3 rounded-xl transition-all text-stone-400 cursor-pointer"
+        >
+          <i data-lucide="check-square" class="w-5 h-5"></i>
+          <span class="text-[10px] mt-1">清單</span>
+        </button>
+        <button
+          onclick="switchTab('tools')"
+          id="nav-tools"
+          class="nav-btn flex flex-col items-center py-1 px-3 rounded-xl transition-all text-stone-400 cursor-pointer"
+        >
+          <i data-lucide="wrench" class="w-5 h-5"></i>
+          <span class="text-[10px] mt-1">工具</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <script>
     // 類別標籤設定
     const CATEGORY_CONFIG = {
       transport: { label: '交', bg: 'bg-amber-100', text: 'text-amber-800' },
@@ -48,953 +113,458 @@
       shop: { label: '購', bg: 'bg-purple-100', text: 'text-purple-800' }
     };
 
-    // 初始行程資料
-    const INITIAL_ITINERARY = [
+    // 全局 State
+    let activeTab = 'itinerary';
+    let selectedDay = '1';
+
+    let itinerary = [
       {
-        day: 1,
+        day: '1',
         date: '2027-02-24',
         week: '三',
         title: '關西抵達 ➔ 直奔京都 ➔ 世界遺產東寺探訪 & 伊勢丹購物',
         hotel: "Hotel The M's Kyoto (京都)",
         hotelMapUrl: 'https://maps.google.com/?q=Hotel+The+M%27s+Kyoto',
         spots: [
-          {
-            id: '1-1',
-            time: '12:50',
-            name: '抵達關西國際機場 (KIX)',
-            address: '大阪府泉佐野市泉州空港北1',
-            notes: '預抓 1 小時完成入境與領行李。搭乘 JR Haruka 特急 (約 80 分鐘) 直達京都站。',
-            category: 'transport',
-            googleMapsUrl: 'https://maps.google.com/?q=Kansai+International+Airport'
-          },
-          {
-            id: '1-2',
-            time: '14:50',
-            name: "Hotel The M's Kyoto 辦理入住",
-            address: '京都府京都市南區東九條東山王町14',
-            notes: '辦理 Check-in、放置行李，整備後展開京都古都巡禮。',
-            category: 'hotel',
-            googleMapsUrl: "https://maps.google.com/?q=Hotel+The+M%27s+Kyoto"
-          },
-          {
-            id: '1-3',
-            time: '15:40',
-            name: '東寺 (Toji Temple)',
-            address: '京都府京都市南區九條町1',
-            notes: '世界文化遺產，參觀日本最高木造五重塔與講堂密教尊像。',
-            category: 'spot',
-            googleMapsUrl: 'https://maps.google.com/?q=Toji+Temple'
-          },
-          {
-            id: '1-4',
-            time: '17:30',
-            name: 'JR 京都伊勢丹 B1F 購物與美食美食街',
-            address: '日本〒600-8216 Kyoto, Shimogyo Ward, Higashishiokojicho, 901 ジェイアール京都伊勢丹 B1F',
-            notes: '採購京都知名老鋪和菓子、抹茶伴手禮與極緻日式精緻便當甜點。',
-            category: 'shop',
-            googleMapsUrl: 'https://maps.google.com/?q=JR+Kyoto+Isetan+B1F'
-          }
+          { id: '1-1', time: '12:50', name: '抵達關西國際機場 (KIX)', address: '大阪府泉佐野市泉州空港北1', notes: '搭乘 JR Haruka 特急直達京都站。', category: 'transport' },
+          { id: '1-2', time: '14:50', name: "Hotel The M's Kyoto 辦理入住", address: '京都府京都市南區東九條東山王町14', notes: '辦理 Check-in、放置行李。', category: 'hotel' },
+          { id: '1-3', time: '15:40', name: '東寺 (Toji Temple)', address: '京都府京都市南區九條町1', notes: '世界文化遺產，參觀最高木造五重塔。', category: 'spot' },
+          { id: '1-4', time: '17:30', name: 'JR 京都伊勢丹 B1F 購物與美食街', address: '京都市下京區東塩小路町', notes: '採購京都知名和菓子與伴手禮。', category: 'shop' }
         ]
       },
       {
-        day: 2,
+        day: '2',
         date: '2027-02-25',
         week: '四',
-        title: '洛北靈氣山神巡禮 (貴船神社 ➔ 下鴨神社)',
+        title: '貴船神社 ➔ 貴船茶屋午餐 ➔ 下鴨神社 ➔ 錦市場 ➔ 新京極 ➔ 四條河原町 (方案A)',
         hotel: "Hotel The M's Kyoto (京都)",
         hotelMapUrl: 'https://maps.google.com/?q=Hotel+The+M%27s+Kyoto',
         spots: [
-          {
-            id: '2-1',
-            time: '09:30',
-            name: '貴船神社 (Kifune Shrine)',
-            address: '京都府京都市左京區鞍馬貴船町180',
-            notes: '紅燈籠石階、水占卜、繪馬發源地。冬日體驗靈氣山神洗禮。',
-            category: 'spot',
-            googleMapsUrl: 'https://maps.google.com/?q=Kifune+Shrine'
-          },
-          {
-            id: '2-2',
-            time: '13:30',
-            name: '下鴨神社 (賀茂御祖神社) & 糺之森',
-            address: '京都府京都市左京區下鴨泉川町59',
-            notes: '搭乘叡山電車至出町柳轉乘，漫步太古原生林「糺之森」，參拜水守護與河合神社美顏繪馬。',
-            category: 'spot',
-            googleMapsUrl: 'https://maps.google.com/?q=Shimogamo+Shrine'
-          }
+          { id: '2-1', time: '08:30', name: "Hotel The M's Kyoto 出發", address: '京都府京都市南區東九條東山王町14', notes: '早晨從飯店出發前往洛北貴船神社。', category: 'hotel' },
+          { id: '2-2', time: '09:30', name: '貴船神社 (Kifune Shrine)', address: '京都府京都市左京區鞍馬貴船町180', notes: '參拜紅燈籠石階、水占卜與繪馬發源地。', category: 'spot' },
+          { id: '2-2-1', time: '11:30', name: '美食午餐：貴船茶屋 (Kifune Chaya)', address: '京都府京都市左京區鞍馬貴船町18', notes: '位於貴船神社旁，享用洛北精緻日式套餐與名物川床氣氛料理。', category: 'food' },
+          { id: '2-3', time: '13:30', name: '下鴨神社 (賀茂御祖神社) & 糺之森', address: '京都府京都市左京區下鴨泉川町59', notes: '漫步太古原生林「糺之森」，參拜水守護與河合神社美顏繪馬。', category: 'spot' },
+          { id: '2-4', time: '15:30', name: '錦市場 (Nishiki Market)', address: '京都府京都市中京區錦小路通', notes: '京都人的廚房小吃採購、玉子燒與道地日式散策。', category: 'shop' },
+          { id: '2-5', time: '17:00', name: '新京極商店街 (Shinkyogoku)', address: '京都府京都市中京區新京極通', notes: '緊鄰錦市場出口，逛藥妝、服飾與參拜錦天滿宮。', category: 'shop' },
+          { id: '2-6', time: '18:30', name: '四條河原町 (Kawaramachi)', address: '京都府京都市下京區四條通河原町', notes: '京都最繁華商圈，享用晚宴與各大百貨購物。', category: 'shop' }
         ]
       },
       {
         day: '2-1',
         date: '2027-02-25',
         week: '四',
-        title: '洛北與東山禪意巡禮 (貴船神社 ➔ 銀閣寺)',
+        title: '貴船神社 ➔ 貴船茶屋午餐 ➔ 晴明神社 ➔ 六角堂 ➔ 錦市場 ➔ 新京極 ➔ 河原町 (方案B)',
         hotel: "Hotel The M's Kyoto (京都)",
         hotelMapUrl: 'https://maps.google.com/?q=Hotel+The+M%27s+Kyoto',
         spots: [
-          {
-            id: '2-1-1',
-            time: '09:30',
-            name: '貴船神社 (Kifune Shrine)',
-            address: '京都府京都市左京區鞍馬貴船町180',
-            notes: '紅燈籠石階、水占卜、繪馬發源地。冬日體驗靈氣山神洗禮。',
-            category: 'spot',
-            googleMapsUrl: 'https://maps.google.com/?q=Kifune+Shrine'
-          },
-          {
-            id: '2-1-2',
-            time: '13:30',
-            name: '銀閣寺 (慈照寺 Jisho-ji)',
-            address: '京都府京都市左京區銀閣寺町2',
-            notes: '世界文化遺產，枯山水庭園與向月台，觀賞東山文化古樸禪意風格。',
-            category: 'spot',
-            googleMapsUrl: 'https://maps.google.com/?q=Ginkakuji'
-          }
+          { id: '2-1-1', time: '08:30', name: "Hotel The M's Kyoto 出發", address: '京都府京都市南區東九條東山王町14', notes: '早晨從飯店出發前往洛北貴船神社。', category: 'hotel' },
+          { id: '2-1-2', time: '09:30', name: '貴船神社 (Kifune Shrine)', address: '京都府京都市左京區鞍馬貴船町180', notes: '參拜紅燈籠石階、水占卜與繪馬發源地。', category: 'spot' },
+          { id: '2-1-2-1', time: '11:30', name: '美食午餐：貴船茶屋 (Kifune Chaya)', address: '京都府京都市左京區鞍馬貴船町18', notes: '於貴船參拜後享用道地季節料理與特色午餐。', category: 'food' },
+          { id: '2-1-3', time: '13:30', name: '晴明神社 (Seimei Shrine)', address: '京都府京都市上京區晴明町806', notes: '陰陽師安倍晴明居所與五芒星魔除神域。', category: 'spot' },
+          { id: '2-1-4', time: '14:45', name: '頂法寺 六角堂 (Rokkaku-do)', address: '京都府京都市中京區堂之前町248', notes: '順路向南，參拜聖德太子創立古剎與池坊華道發源地。', category: 'spot' },
+          { id: '2-1-5', time: '15:30', name: '錦市場 (Nishiki Market)', address: '京都府京都市中京區錦小路通', notes: '從六角堂徒步 5 分鐘即達！美食與伴手禮採購。', category: 'shop' },
+          { id: '2-1-6', time: '17:00', name: '新京極商店街 (Shinkyogoku)', address: '京都府京都市中京區新京極通', notes: '逛藥妝、雜貨與參拜錦天滿宮。', category: 'shop' },
+          { id: '2-1-7', time: '18:30', name: '四條河原町 (Kawaramachi)', address: '京都府京都市下京區四條通河原町', notes: '河原町晚餐與暢逛百貨。', category: 'shop' }
         ]
       },
       {
-        day: 3,
+        day: '3',
         date: '2027-02-26',
         week: '五',
-        title: '學問之神、經典名剎與白兔神社',
+        title: '北野天滿宮 ➔ 仁和寺 ➔ Ninnaji Jourx Space ➔ 上賀茂神社 ➔ 護王神社 ➔ 祇園郵局 ➔ 柚子元晚餐 (方案A)',
         hotel: "Hotel The M's Kyoto (京都)",
         hotelMapUrl: 'https://maps.google.com/?q=Hotel+The+M%27s+Kyoto',
         spots: [
-          {
-            id: '3-1',
-            time: '09:00',
-            name: '北野天滿宮 (Kitano Tenmangu)',
-            address: '京都府京都市上京區馬喰町',
-            notes: '日本天滿宮總本社，賞早梅與求祈學業順利。',
-            category: 'spot',
-            googleMapsUrl: 'https://maps.google.com/?q=Kitano+Tenmangu'
-          },
-          {
-            id: '3-2',
-            time: '11:00',
-            name: '仁和寺 (Ninna-ji Temple)',
-            address: '京都府京都市右京區御室大內33',
-            notes: '從北野天滿宮搭乘嵐電直達，世界遺產與御室御所古蹟建築。',
-            category: 'spot',
-            googleMapsUrl: 'https://maps.google.com/?q=Ninnaji'
-          },
-          {
-            id: '3-3',
-            time: '13:30',
-            name: '上賀茂神社 (Kamigamo Shrine)',
-            address: '京都府京都市北區上賀茂本神集339',
-            notes: '京都最古老神社之一，立砂奇景與清澈小溪神域。',
-            category: 'spot',
-            googleMapsUrl: 'https://maps.google.com/?q=Kamigamo+Shrine'
-          },
-          {
-            id: '3-4',
-            time: '16:00',
-            name: '岡崎神社 (Okazaki Shrine)',
-            address: '京都府京都市左京區岡崎東天王町51',
-            notes: '熱門白兔神社，求求子求求安產，開運白兔御神籤。',
-            category: 'spot',
-            googleMapsUrl: 'https://maps.google.com/?q=Okazaki+Shrine'
-          }
+          { id: '3-1', time: '09:30', name: '北野天滿宮', address: '京都府京都市上京區馬喰町', notes: '參拜學問之神與早梅庭園。', category: 'spot' },
+          { id: '3-2', time: '11:30', name: '仁和寺 (Ninna-ji)', address: '京都府京都市右京區御室大內33', notes: '搭乘嵐電直達御室仁和寺。', category: 'spot' },
+          { id: '3-3', time: '13:00', name: 'Ninnaji Jourx Space', address: '京都府京都市右京區御室大內 (仁和寺參道周邊)', notes: '仁和寺周邊特色空間與午餐美食休息。', category: 'food' },
+          { id: '3-4', time: '14:30', name: '上賀茂神社', address: '京都府京都市北區上賀茂本神集339', notes: '參拜古老神社與立砂神域。', category: 'spot' },
+          { id: '3-5', time: '16:30', name: '護王神社', address: '京都府京都市上京區烏丸通下長者町', notes: '足腰守護神社與野豬石像。', category: 'spot' },
+          { id: '3-6', time: '17:40', name: '京都祇園郵局 (Gion Post Office)', address: '日本〒605-0079 Kyoto, Higashiyama Ward, Tokiwacho, 153', notes: '寄送京都限定明信片、蓋紀念風景印與感受祇園夜間古風街景。', category: 'spot' },
+          { id: '3-7', time: '19:00', name: '美食晚餐：柚子元 先斗町店 (Yuzumoto)', address: '京都府京都市中京區鍋屋町212', notes: '從祇園郵局徒步過鴨川即達先斗町！享用名物香氣十足的柚子火鍋與道地日式料理。', category: 'food' }
         ]
       },
       {
-        day: 4,
+        day: '3-1',
+        date: '2027-02-26',
+        week: '五',
+        title: '北野天滿宮 ➔ 仁和寺 ➔ Ninnaji Jourx Space ➔ 京都御苑 ➔ 護王神社 ➔ 祇園郵局 ➔ 柚子元晚餐 (方案B)',
+        hotel: "Hotel The M's Kyoto (京都)",
+        hotelMapUrl: 'https://maps.google.com/?q=Hotel+The+M%27s+Kyoto',
+        spots: [
+          { id: '3-1-1', time: '09:30', name: '北野天滿宮', address: '京都府京都市上京區馬喰町', notes: '參拜學問之神與早梅庭園。', category: 'spot' },
+          { id: '3-1-2', time: '11:30', name: '仁和寺 (Ninna-ji)', address: '京都府京都市右京區御室大內33', notes: '搭乘嵐電直達御室仁和寺。', category: 'spot' },
+          { id: '3-1-3', time: '13:00', name: 'Ninnaji Jourx Space', address: '京都府京都市右京區御室大內 (仁和寺參道周邊)', notes: '仁和寺周邊特色空間與午餐美食休息。', category: 'food' },
+          { id: '3-1-4', time: '14:30', name: '京都御苑 (Kyoto Gyoen)', address: '京都府京都市上京區京都御苑', notes: '昔日皇室御苑散策，緊鄰護王神社對面。', category: 'spot' },
+          { id: '3-1-5', time: '16:00', name: '護王神社', address: '京都府京都市上京區烏丸通下長者町', notes: '位於京都御苑對面，參拜足腰守護神社。', category: 'spot' },
+          { id: '3-1-6', time: '17:30', name: '京都祇園郵局 (Gion Post Office)', address: '日本〒605-0079 Kyoto, Higashiyama Ward, Tokiwacho, 153', notes: '順路前往祇園，寄送特色明信片與祇園花見小路散策。', category: 'spot' },
+          { id: '3-1-7', time: '19:00', name: '美食晚餐：柚子元 先斗町店 (Yuzumoto)', address: '京都府京都市中京區鍋屋町212', notes: '位於先斗町巷弄，享用名物香甜鮮美的柚子火鍋與手作料理美食饗宴。', category: 'food' }
+        ]
+      },
+      {
+        day: '4',
         date: '2027-02-27',
         week: '六',
-        title: '烏丸南北貫穿古社巡禮',
+        title: '市川屋咖啡 ➔ 市比賣神社 ➔ 御金神社 ➔ 岡崎神社 ➔ 淀之河津櫻 ➔ Ginsui銀水晚餐',
         hotel: "Hotel The M's Kyoto (京都)",
         hotelMapUrl: 'https://maps.google.com/?q=Hotel+The+M%27s+Kyoto',
         spots: [
-          {
-            id: '4-1',
-            time: '09:30',
-            name: '京都御所 (Kyoto Imperial Palace)',
-            address: '京都府京都市上京區京都御苑3',
-            notes: '清晨參觀昔日皇室宮邸與高雅庭園，避開白天觀光人潮。',
-            category: 'spot',
-            googleMapsUrl: 'https://maps.google.com/?q=Kyoto+Imperial+Palace'
-          },
-          {
-            id: '4-2',
-            time: '11:30',
-            name: '護王神社 (Go-o Shrine)',
-            address: '京都府京都市上京區烏丸通下長者町下ル櫻鶴圓町385',
-            notes: '位於京都御所蛤御門正對面，徒步3分鐘即達！足腰守護與野豬石像。',
-            category: 'spot',
-            googleMapsUrl: 'https://maps.google.com/?q=Goo+Shrine'
-          },
-          {
-            id: '4-3',
-            time: '14:00',
-            name: '御金神社 (Mikane Shrine)',
-            address: '京都府京都市中京區押西洞院町618',
-            notes: '地鐵烏丸線順路向南至烏丸御池，參拜金黃鳥居與洗錢求財。',
-            category: 'spot',
-            googleMapsUrl: 'https://maps.google.com/?q=Mikane+Shrine'
-          },
-          {
-            id: '4-4',
-            time: '15:30',
-            name: '市比賣神社 (Ichihime Shrine)',
-            address: '京都府京都市下京區河原町五條下ル一之船入町',
-            notes: '順路向南至五條站附近，女性守護與姬籤體驗。',
-            category: 'spot',
-            googleMapsUrl: 'https://maps.google.com/?q=Ichihime+Shrine'
-          }
+          { id: '4-1', time: '08:30', name: '市川屋咖啡 (Ichikawaya Coffee)', address: '京都府京都市東山區鐘鑄町396-2', notes: '古民家手沖咖啡與季節水果三明治早餐。', category: 'food' },
+          { id: '4-2', time: '10:00', name: '市比賣神社 (Ichihime Shrine)', address: '京都府京都市下京區河原町五條下ル', notes: '女性守護神社與姬籤體驗。', category: 'spot' },
+          { id: '4-3', time: '12:00', name: '御金神社 (Mikane Shrine)', address: '京都府京都市中京區押西洞院町618', notes: '參拜金黃鳥居與洗錢求財運。', category: 'spot' },
+          { id: '4-4', time: '14:00', name: '岡崎神社 (Okazaki Shrine)', address: '京都府京都市左京區岡崎東天王町51', notes: '可愛白兔神社與求開運。', category: 'spot' },
+          { id: '4-5', time: '16:00', name: '淀之河津櫻 (Yodo Kawazu Sakura)', address: '京都府京都市伏見區淀水路', notes: '賞早春盛開的粉嫩河津櫻。', category: 'spot' },
+          { id: '4-6', time: '18:30', name: '美食晚餐：Ginsui 銀水', address: '京都府京都市中京區先斗町/木屋町周邊', notes: '順路返回三條先斗町繁華商圈，享用美味傳統日式料理與經典居酒屋晚宴。', category: 'food' }
         ]
       },
       {
-        day: 5,
+        day: '5',
         date: '2027-02-28',
         week: '日',
-        title: '移防大阪、中之島藝術與梅田露天神社散策',
-        hotel: 'Hotel Gracery Osaka Namba (大阪難波)',
+        title: '移動至難波格拉斯麗酒店 ➔ 中之島圖書館 & KAKO TO IMA ➔ 中央公會堂 ➔ 美術館 ➔ 露天神社 ➔ 梅田購物 ➔ Shabuzen晚餐',
+        hotel: '難波格拉斯麗酒店 (Hotel Gracery Osaka Namba)',
         hotelMapUrl: 'https://maps.google.com/?q=Hotel+Gracery+Osaka+Namba',
         spots: [
-          {
-            id: '5-1',
-            time: '10:00',
-            name: '京都飯店退房 & 移動至大阪難波',
-            address: '大阪府大阪市中央區難波1-4-16',
-            notes: '搭乘近鐵特急或 JR 前往大阪難波飯店 Check-in / 寄放行李。',
-            category: 'transport',
-            googleMapsUrl: 'https://maps.google.com/?q=Hotel+Gracery+Osaka+Namba'
-          },
-          {
-            id: '5-2',
-            time: '13:00',
-            name: '大阪府立中之島圖書館',
-            address: '大阪府大阪市北區中之島1-2-10',
-            notes: '重要文化財，古典巴洛克雄偉石造建築，附設丹麥三明治 Café。',
-            category: 'spot',
-            googleMapsUrl: 'https://maps.google.com/?q=Nakanoshima+Library'
-          },
-          {
-            id: '5-3',
-            time: '14:30',
-            name: '大阪中之島美術館 (NAKANOSHIMA MUSEUM)',
-            address: '大阪府大阪市北區中之島4-3-1',
-            notes: '黑色巨型方塊現代建築藝術景點，戶外巨大貓咪雕塑打卡。',
-            category: 'spot',
-            googleMapsUrl: 'https://maps.google.com/?q=Nakanoshima+Museum+of+Art'
-          },
-          {
-            id: '5-4',
-            time: '16:30',
-            name: '露天神社 (Ohatsu Tenjin)',
-            address: '〒530-0057 大阪府大阪市北区曾根崎２丁目５−4',
-            notes: '近松門左衛門人形淨瑠璃靈魂之地，求戀愛成就與心靈寄託。',
-            category: 'spot',
-            googleMapsUrl: 'https://maps.google.com/?q=Ohatsu+Tenjin'
-          },
-          {
-            id: '5-5',
-            time: '17:30',
-            name: '梅田商圈大逛街 (LUCUA / GRAND FRONT / 阪急)',
-            address: '大阪府大阪市北區梅田',
-            notes: '順路逛梅田商圈，血拼精緻服飾、雜貨、藥妝與曾根崎初天神通美食。',
-            category: 'shop',
-            googleMapsUrl: 'https://maps.google.com/?q=Umeda+Station'
-          }
+          { id: '5-1', time: '10:00', name: '退房移動至難波格拉斯麗酒店', address: '大阪府大阪市中央區難波1-4-16', notes: '搭乘近鐵特急前往難波格拉斯麗酒店 Check-in / 寄放行李。', category: 'transport' },
+          { id: '5-2', time: '12:30', name: '大阪府立中之島圖書館', address: '大阪府大阪市北區中之島1-2-10', notes: '重要文化財，巴洛克式古蹟圖書館。', category: 'spot' },
+          { id: '5-3', time: '13:00', name: '美食午餐：KAKO TO IMA (カコトイマ)', address: '大阪府大阪市北區中之島1-2-10 (中之島圖書館內)', notes: '位於中之島圖書館內的質感餐廳，享用精緻餐點、丹麥開放式三明治與手作咖啡。', category: 'food' },
+          { id: '5-4', time: '14:30', name: '大阪市中央公會堂 (Osaka City Central Public Hall)', address: '大阪府大阪市北區中之島1-1-27', notes: '緊鄰圖書館，大正時期古典紅磚建築美學代表作與重要文化財。', category: 'spot' },
+          { id: '5-5', time: '15:40', name: '大阪中之島美術館', address: '大阪府大阪市北區中之島4-3-1', notes: '現代建築美學與巨大貓咪雕塑。', category: 'spot' },
+          { id: '5-6', time: '17:00', name: '露天神社 (Ohatsu Tenjin)', address: '大阪府大阪市北區曾根崎2-5-4', notes: '祈求結緣與心靈寄託古社。', category: 'spot' },
+          { id: '5-7', time: '18:00', name: '梅田商圈大購物', address: '大阪府大阪市北區梅田', notes: '逛 LUCUA、GRAND FRONT 與各大百貨。', category: 'shop' },
+          { id: '5-8', time: '20:00', name: '美食晚餐：Shabuzen Umedaten (しゃぶ禪 梅田店)', address: '大阪府大阪市北區梅田2-2-2 堂島ヒビノビル B1F', notes: '位於梅田/堂島商圈，享用極致黑毛和牛與神戶牛涮涮鍋/壽喜燒高級吃到飽尊榮晚宴！', category: 'food' }
         ]
       },
       {
-        day: 6,
+        day: '6',
         date: '2027-03-01',
         week: '一',
-        title: '古社參拜 ➔ 勝尾寺勝運達摩 ➔ 箕面瀑布 ➔ 難波商圈大逛街',
+        title: '勝尾寺勝運達摩 ➔ 箕面瀑布 ➔ 吉次烤牛舌午餐 ➔ 難波道頓堀購物 ➔ 法善寺山一鰻魚飯晚餐',
         hotel: 'Hotel Gracery Osaka Namba (大阪難波)',
         hotelMapUrl: 'https://maps.google.com/?q=Hotel+Gracery+Osaka+Namba',
         spots: [
-          {
-            id: '6-1',
-            time: '09:30',
-            name: '服部住吉神社 (Hattori Sumiyoshi Shrine)',
-            address: '大阪府豐中市服部南町1-4-1',
-            notes: '搭乘阪急寶塚線至服部天神站，早晨參拜清靜幽深古社。',
-            category: 'spot',
-            googleMapsUrl: 'https://maps.google.com/?q=Hattori+Sumiyoshi+Shrine'
-          },
-          {
-            id: '6-2',
-            time: '11:30',
-            name: '勝尾寺 (Katsuo-ji Temple)',
-            address: '大阪府箕面市勝尾寺',
-            notes: '勝運之寺！滿山滿谷的迷你勝運達摩不倒翁，求運勢旺盛。',
-            category: 'spot',
-            googleMapsUrl: 'https://maps.google.com/?q=Katsuo-ji'
-          },
-          {
-            id: '6-3',
-            time: '14:00',
-            name: '箕面瀑布 (Minoh Waterfall)',
-            address: '大阪府箕面市箕面公園',
-            notes: '日本瀑布百選之一！漫步溪谷步道，感受天然大瀑布芬多精。',
-            category: 'spot',
-            googleMapsUrl: 'https://maps.google.com/?q=Minoh+Waterfall'
-          },
-          {
-            id: '6-4',
-            time: '17:00',
-            name: '難波商圈大逛街 (Namba Shopping)',
-            address: '大阪府大阪市中央區難波',
-            notes: '返回難波市區，晚餐享用道頓堀美食、藥妝補貨，輕鬆散步回飯店擺放戰利品。',
-            category: 'shop',
-            googleMapsUrl: 'https://maps.google.com/?q=Namba+Station'
-          }
+          { id: '6-1', time: '11:00', name: '勝尾寺 (Katsuo-ji)', address: '大阪府箕面市勝尾寺', notes: '滿山勝運達摩不倒翁，求運勢旺盛。', category: 'spot' },
+          { id: '6-2', time: '13:00', name: '箕面瀑布 (Minoh Waterfall)', address: '大阪府箕面市箕面公園', notes: '參拜勝尾寺後前往，日本瀑布百選，漫步自然步道與森林芬多精。', category: 'spot' },
+          { id: '6-3', time: '14:30', name: '美食午餐：牛たん炭火焼 吉次 鰻谷店 (YOSHIJI)', address: '大阪府大阪市中央區東心齋橋1-16-12', notes: '鄰近心齋橋/鰻谷，享用仙台極上厚切炭火烤牛舌定食與美味麥飯！', category: 'food' },
+          { id: '6-4', time: '17:00', name: '難波 & 道頓堀美食大採購', address: '大阪府大阪市中央區難波', notes: '道頓堀吃章魚燒、逛心齋橋與藥妝補貨。', category: 'shop' },
+          { id: '6-5', time: '19:30', name: '美食晚餐：法善寺 山一 (Hozenji Yamakazu 鰻魚飯)', address: '大阪府大阪市中央區難波1-1-17 (法善寺橫丁)', notes: '位於情緒滿載的法善寺橫丁，品嚐香氣十足的經典炭火烤鰻魚飯美味！', category: 'food' }
         ]
       },
       {
-        day: 7,
+        day: '7',
         date: '2027-03-02',
         week: '二',
-        title: '泉州大鳥大社 ➔ 難波/心齋橋/道頓堀極致購物狂歡',
+        title: '和泉大鳥大社 ➔ 難波 / 心齋橋 / 道頓堀極致購物狂歡日 ➔ 晚餐Let It Beef肥後橋店',
         hotel: 'Hotel Gracery Osaka Namba (大阪難波)',
         hotelMapUrl: 'https://maps.google.com/?q=Hotel+Gracery+Osaka+Namba',
         spots: [
-          {
-            id: '7-1',
-            time: '10:00',
-            name: '大鳥神社 (大鳥大社 Otori Taisha)',
-            address: '大阪府堺市西區鳳北町1-1-2',
-            notes: '和泉國一之宮，千家千庵名剎，參拜和泉大鳥居與日本武尊神話祈願。',
-            category: 'spot',
-            googleMapsUrl: 'https://maps.google.com/?q=Otori+Taisha'
-          },
-          {
-            id: '7-2',
-            time: '14:30',
-            name: '難波 / 心齋橋 / 道頓堀商圈大血拼',
-            address: '大阪府大阪市中央區心齋橋筋',
-            notes: '專屬大逛街日！藥妝店、PARCO、高島屋、心齋橋筋大採購，買完直接拎回飯店。',
-            category: 'shop',
-            googleMapsUrl: 'https://maps.google.com/?q=Shinsaibashi'
-          }
+          { id: '7-1', time: '10:00', name: '大鳥大社 (Otori Taisha)', address: '大阪府堺市西區鳳北町1-1-2', notes: '和泉國一之宮，參拜日本武尊歷史古社。', category: 'spot' },
+          { id: '7-2', time: '14:30', name: '難波 / 心齋橋筋全天採購', address: '大阪府大阪市中央區心齋橋筋', notes: '專屬購物日！PARCO、高島屋、藥妝採購。', category: 'shop' },
+          { id: '7-3', time: '19:00', name: '美食晚餐：レットイットビーフ 肥後橋店 (Let It Beef)', address: '大阪府大阪市西區江戸堀1-16-32', notes: '鄰近肥後橋站，享用極緻熟成黑毛和牛燒肉與牛肉料理晚宴（當日最終站）。', category: 'food' }
         ]
       },
       {
-        day: 8,
+        day: '8',
         date: '2027-03-03',
         week: '三',
-        title: '難波退房 ➔ 南海電鐵直達關西機場返台',
+        title: '飯店 Check-out ➔ 搭乘南海電鐵直達關西機場 (KIX) 買伴手禮返台',
         hotel: '溫馨的家',
         hotelMapUrl: 'https://maps.google.com/?q=Kansai+International+Airport',
         spots: [
-          {
-            id: '8-1',
-            time: '10:00',
-            name: '飯店辦理退房Check-out',
-            address: '大阪府大阪市中央區難波1-4-16',
-            notes: '整理行李打包戰利品，至南海難波站搭乘 Rapi:t 機場特急。',
-            category: 'hotel',
-            googleMapsUrl: 'https://maps.google.com/?q=Namba+Station'
-          },
-          {
-            id: '8-2',
-            time: '11:30',
-            name: '抵達關西機場 (KIX) 免稅店掃貨與登機',
-            address: '大阪府泉佐野市泉州空港北1',
-            notes: '辦理託運、入關免稅店最後補貨，準備搭機結束完美京阪行程。',
-            category: 'transport',
-            googleMapsUrl: 'https://maps.google.com/?q=Kansai+International+Airport'
-          }
+          { id: '8-1', time: '10:00', name: '辦理退房與打包戰利品', address: '大阪府大阪市中央區難波1-4-16', notes: '搭乘南海電鐵 Rapi:t 機場特急。', category: 'hotel' },
+          { id: '8-2', time: '11:30', name: '關西國際機場 (KIX) 免稅店掃貨', address: '大阪府泉佐野市泉州空港北1', notes: '最後採購日本銘菓，滿載而歸返台。', category: 'transport' }
         ]
       }
     ];
 
-    function App() {
-      const [activeTab, setActiveTab] = useState('itinerary');
-      const [selectedDay, setSelectedDay] = useState(1);
-      const [showImportModal, setShowImportModal] = useState(false);
-      const [showAddModal, setShowAddModal] = useState(false);
-      const [importText, setImportText] = useState('');
-
-      const [newSpotForm, setNewSpotForm] = useState({
-        name: '',
-        time: '12:00',
-        address: '',
-        category: 'spot',
-        notes: ''
+    // 切換分頁
+    function switchTab(tab) {
+      activeTab = tab;
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('text-[#8C7A6B]', 'font-bold');
+        btn.classList.add('text-stone-400');
       });
-
-      const [itinerary, setItinerary] = useState(() => {
-        try {
-          const saved = localStorage.getItem('kyoto_osaka_gh_pages_app');
-          return saved ? JSON.parse(saved) : INITIAL_ITINERARY;
-        } catch (e) {
-          return INITIAL_ITINERARY;
-        }
-      });
-
-      useEffect(() => {
-        try {
-          localStorage.setItem('kyoto_osaka_gh_pages_app', JSON.stringify(itinerary));
-        } catch (e) {}
-      }, [itinerary]);
-
-      useEffect(() => {
-        if (window.lucide) {
-          window.lucide.createIcons();
-        }
-      });
-
-      const currentDayData = itinerary.find(d => d.day === selectedDay) || itinerary[0];
-
-      const getGoogleMapsDirectionsUrl = (spotName, address, prevSpot = null) => {
-        const destinationQuery = encodeURIComponent(address ? `${spotName} ${address}` : spotName);
-        if (prevSpot) {
-          const originQuery = encodeURIComponent(prevSpot.address ? `${prevSpot.name} ${prevSpot.address}` : prevSpot.name);
-          return `https://www.google.com/maps/dir/?api=1&origin=${originQuery}&destination=${destinationQuery}&travelmode=transit`;
-        }
-        return `https://www.google.com/maps/dir/?api=1&destination=${destinationQuery}&travelmode=transit`;
-      };
-
-      const handleExecuteImport = () => {
-        if (!importText.trim()) return;
-
-        const lines = importText.split('\n').filter(line => line.trim() !== '');
-        const newSpots = lines.map((line, idx) => {
-          const timeMatch = line.match(/^(\d{1,2}:\d{2})\s*(.*)/);
-          let time = '12:00';
-          let name = line.trim();
-
-          if (timeMatch) {
-            time = timeMatch[1];
-            name = timeMatch[2] || line.trim();
-          }
-
-          return {
-            id: `${selectedDay}-imp-${Date.now()}-${idx}`,
-            time,
-            name,
-            address: '',
-            notes: '由文字批量匯入',
-            category: 'spot',
-            googleMapsUrl: `https://maps.google.com/?q=${encodeURIComponent(name)}`
-          };
-        });
-
-        setItinerary(prev => prev.map(d => {
-          if (d.day === selectedDay) {
-            return { ...d, spots: [...d.spots, ...newSpots] };
-          }
-          return d;
-        }));
-
-        setImportText('');
-        setShowImportModal(false);
-      };
-
-      const handleDeleteSpot = (dayNum, spotId) => {
-        setItinerary(prev => prev.map(d => {
-          if (d.day === dayNum) {
-            return { ...d, spots: d.spots.filter(s => s.id !== spotId) };
-          }
-          return d;
-        }));
-      };
-
-      const handleCreateSpotSubmit = (e) => {
-        e.preventDefault();
-        if (!newSpotForm.name.trim()) return;
-
-        const queryTarget = encodeURIComponent(`${newSpotForm.name} ${newSpotForm.address}`.trim());
-        const newSpot = {
-          id: `${selectedDay}-${Date.now()}`,
-          time: newSpotForm.time || '12:00',
-          name: newSpotForm.name.trim(),
-          address: newSpotForm.address.trim(),
-          notes: newSpotForm.notes.trim(),
-          category: newSpotForm.category || 'spot',
-          googleMapsUrl: `https://maps.google.com/?q=${queryTarget}`
-        };
-
-        setItinerary(prev => prev.map(d => {
-          if (d.day === selectedDay) {
-            const updatedSpots = [...d.spots, newSpot].sort((a, b) => a.time.localeCompare(b.time));
-            return { ...d, spots: updatedSpots };
-          }
-          return d;
-        }));
-
-        setNewSpotForm({ name: '', time: '12:00', address: '', category: 'spot', notes: '' });
-        setShowAddModal(false);
-      };
-
-      return (
-        <div className="min-h-screen bg-[#F0EEE9] text-[#4A3B32] font-sans pb-28 antialiased">
-          
-          {/* Header */}
-          <header className="bg-[#4A3B32] text-white px-5 py-4 shadow-md sticky top-0 z-30">
-            <div className="max-w-xl mx-auto flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#8C7A6B] flex items-center justify-center font-bold text-base shadow-inner">
-                  京
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h1 className="font-bold text-lg tracking-wide">2027 京阪 8天7夜 ✨</h1>
-                    <span className="text-[11px] bg-white/15 px-2 py-0.5 rounded-full font-mono text-stone-200">
-                      2/24 - 3/3
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-[#C2A698] font-mono tracking-wider mt-0.5">
-                    PANTONE Cloud Dancer x Mocha Mousse
-                  </p>
-                </div>
-              </div>
-            </div>
-          </header>
-
-          <main className="max-w-xl mx-auto px-4 pt-4">
-
-            {activeTab === 'itinerary' && (
-              <div className="space-y-4">
-                
-                {/* DAY 頁籤列 */}
-                <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-                  {itinerary.map(item => {
-                    const isSelected = item.day === selectedDay;
-                    return (
-                      <button
-                        key={item.day}
-                        onClick={() => setSelectedDay(item.day)}
-                        className={`flex-shrink-0 px-4 py-2 rounded-xl text-center transition-all ${
-                          isSelected 
-                            ? 'bg-[#8C7A6B] text-white font-bold shadow-sm' 
-                            : 'bg-[#E5E1DA] text-[#6E5D53] hover:bg-[#DCD7CE]'
-                        }`}
-                      >
-                        <div className="text-xs font-bold uppercase tracking-wider">
-                          {typeof item.day === 'number' ? `DAY ${item.day}` : `DAY ${item.day}`}
-                        </div>
-                        <div className="text-[10px] opacity-90 mt-0.5">{item.date}</div>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* 當日概覽卡片 */}
-                <div className="bg-white rounded-2xl p-4 border border-[#E5E1DA] shadow-xs">
-                  <div className="flex items-center gap-2 text-xs font-bold text-[#8C7A6B] mb-1">
-                    <span className="bg-[#8C7A6B] text-white px-2 py-0.5 rounded-md text-[11px]">
-                      DAY {currentDayData.day}
-                    </span>
-                    <span>{currentDayData.date} ({currentDayData.week})</span>
-                  </div>
-                  <h2 className="text-base font-bold text-[#4A3B32] mt-1 mb-2">
-                    {currentDayData.title}
-                  </h2>
-                  <div className="flex items-center justify-between text-xs text-[#786458] border-t border-[#F0EEE9] pt-2.5 mt-2">
-                    <div className="flex items-center gap-1.5 truncate">
-                      <i data-lucide="map-pin" className="w-3.5 h-3.5 flex-shrink-0 text-[#8C7A6B]"></i>
-                      <span>住宿：{currentDayData.hotel}</span>
-                    </div>
-                    {currentDayData.hotelMapUrl && (
-                      <a
-                        href={currentDayData.hotelMapUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-[#8C7A6B] font-medium hover:underline flex-shrink-0 ml-2"
-                      >
-                        導航 <i data-lucide="external-link" className="w-3 h-3"></i>
-                      </a>
-                    )}
-                  </div>
-                </div>
-
-                {/* 控制項 */}
-                <div className="flex items-center justify-between pt-1">
-                  <span className="text-xs font-bold text-[#6E5D53]">
-                    當日景點明細 ({currentDayData.spots.length})
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <button 
-                      onClick={() => setShowImportModal(true)}
-                      className="px-3 py-1.5 text-xs bg-white text-[#6E5D53] rounded-lg border border-[#DCD7CE] flex items-center gap-1 hover:bg-[#F8F7F5]"
-                    >
-                      <i data-lucide="file-text" className="w-3.5 h-3.5"></i> 匯入文字
-                    </button>
-                    <button 
-                      onClick={() => setShowAddModal(true)}
-                      className="px-3 py-1.5 text-xs bg-[#8C7A6B] text-white rounded-lg flex items-center gap-1 hover:bg-[#786458] shadow-xs font-medium cursor-pointer"
-                    >
-                      <i data-lucide="plus" className="w-3.5 h-3.5"></i> 新增景點
-                    </button>
-                  </div>
-                </div>
-
-                {/* 時間軸景點列表 */}
-                <div className="space-y-4 relative before:absolute before:inset-0 before:left-[15px] before:w-0.5 before:bg-[#DCD7CE] before:z-0">
-                  {currentDayData.spots.map((spot, index) => {
-                    const cat = CATEGORY_CONFIG[spot.category] || CATEGORY_CONFIG.spot;
-                    const prevSpot = index > 0 ? currentDayData.spots[index - 1] : null;
-                    const directionsUrl = getGoogleMapsDirectionsUrl(spot.name, spot.address, prevSpot);
-
-                    return (
-                      <div key={spot.id} className="relative z-10 flex items-start gap-3">
-                        <div className={`w-8 h-8 rounded-full ${cat.bg} ${cat.text} flex items-center justify-center font-bold text-xs flex-shrink-0 shadow-xs mt-1 border-2 border-[#F0EEE9]`}>
-                          {cat.label}
-                        </div>
-
-                        <div className="flex-1 bg-white rounded-2xl p-4 border border-[#E5E1DA] shadow-xs space-y-2">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2 text-xs font-bold text-[#786458]">
-                              <span className="flex items-center gap-1">
-                                <i data-lucide="clock" className="w-3.5 h-3.5 text-[#8C7A6B]"></i> {spot.time}
-                              </span>
-                            </div>
-                            <button 
-                              onClick={() => handleDeleteSpot(selectedDay, spot.id)}
-                              className="text-stone-300 hover:text-red-500 transition-colors p-1"
-                              title="刪除"
-                            >
-                              <i data-lucide="trash-2" className="w-3.5 h-3.5"></i>
-                            </button>
-                          </div>
-
-                          <h3 className="font-bold text-base text-[#4A3B32]">
-                            {spot.name}
-                          </h3>
-
-                          {spot.address && (
-                            <p className="text-[11px] text-[#8C7A6B]">
-                              {spot.address}
-                            </p>
-                          )}
-
-                          {spot.notes && (
-                            <div className="bg-[#FBF9F5] p-3 rounded-xl border border-[#F0EEE9] text-xs text-[#59483E] leading-relaxed">
-                              {spot.notes}
-                            </div>
-                          )}
-
-                          <div className="pt-2 flex items-center justify-between border-t border-[#F0EEE9]">
-                            <span className="text-[11px] text-[#8C7A6B] flex items-center gap-1">
-                              <i data-lucide="train" className="w-3.5 h-3.5"></i> 
-                              {prevSpot ? `前一站：${prevSpot.name.slice(0, 8)}...` : '當日第一站'}
-                            </span>
-                            
-                            <a
-                              href={directionsUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 text-xs bg-[#8C7A6B] text-white hover:bg-[#786458] px-3 py-1.5 rounded-lg font-medium shadow-xs transition-colors"
-                            >
-                              <i data-lucide="navigation" className="w-3 h-3"></i> 路線規劃 & 時間
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* TAB 2: 逛街 */}
-            {activeTab === 'shopping' && (
-              <div className="space-y-4">
-                <div className="bg-white p-4 rounded-2xl border border-[#E5E1DA]">
-                  <h3 className="font-bold text-sm text-[#4A3B32] mb-2 flex items-center gap-2">
-                    <i data-lucide="shopping-bag" className="w-4 h-4 text-[#8C7A6B]"></i> 京阪採購精選商圈
-                  </h3>
-                  <div className="space-y-3 text-xs">
-                    <div className="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
-                      <div className="font-bold text-[#59483E] text-sm">JR 京都伊勢丹 B1F</div>
-                      <div className="text-[#8C7A6B] mt-1">JR 京都站直通！匯集京都各大經典老鋪和菓子、伴手禮、便當與甜點。</div>
-                    </div>
-                    <div className="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
-                      <div className="font-bold text-[#59483E] text-sm">難波 & 心齋橋 & 道頓堀商圈</div>
-                      <div className="text-[#8C7A6B] mt-1">大阪最熱鬧地段！藥妝店、服飾、PARCO、高島屋與道頓堀章魚燒美食。</div>
-                    </div>
-                    <div className="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
-                      <div className="font-bold text-[#59483E] text-sm">梅田商圈 (LUCUA / GRAND FRONT / 阪急)</div>
-                      <div className="text-[#8C7A6B] mt-1">現代化高級百貨匯集地，精緻品牌服飾、日系雜貨與 Yodobashi 電器旗艦館。</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* TAB 3: 美食 */}
-            {activeTab === 'dining' && (
-              <div className="space-y-4">
-                <div className="bg-white p-4 rounded-2xl border border-[#E5E1DA]">
-                  <h3 className="font-bold text-sm text-[#4A3B32] mb-2 flex items-center gap-2">
-                    <i data-lucide="utensils" className="w-4 h-4 text-[#8C7A6B]"></i> 精選美食必吃
-                  </h3>
-                  <div className="space-y-2 text-xs">
-                    <div className="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
-                      <div className="font-bold text-[#59483E]">JR 京都伊勢丹 B1F 和菓子美食街</div>
-                      <div className="text-[#8C7A6B] mt-0.5">匯集京都老字號伴手禮與極致美味的熟食便當。</div>
-                    </div>
-                    <div className="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
-                      <div className="font-bold text-[#59483E]">道頓堀章魚燒與大阪燒</div>
-                      <div className="text-[#8C7A6B] mt-0.5">經典道地大阪小吃，夜間氛圍超熱鬧。</div>
-                    </div>
-                    <div className="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
-                      <div className="font-bold text-[#59483E]">中之島圖書館 咖啡館 (Smørrebrød)</div>
-                      <div className="text-[#8C7A6B] mt-0.5">古蹟建物內享用精緻丹麥開放式三明治。</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* TAB 4: 清單 */}
-            {activeTab === 'checklist' && (
-              <div className="space-y-4">
-                <div className="bg-white p-4 rounded-2xl border border-[#E5E1DA]">
-                  <h3 className="font-bold text-sm text-[#4A3B32] mb-3 flex items-center gap-2">
-                    <i data-lucide="check-square" className="w-4 h-4 text-[#8C7A6B]"></i> 必買紀念品與藥妝清單
-                  </h3>
-                  <div className="space-y-2 text-xs">
-                    <label className="flex items-center gap-2 p-2.5 bg-[#FBF9F5] rounded-xl cursor-pointer">
-                      <input type="checkbox" className="rounded text-[#8C7A6B]" />
-                      <span>JR 京都伊勢丹 B1F 甜點與老鋪伴手禮</span>
-                    </label>
-                    <label className="flex items-center gap-2 p-2.5 bg-[#FBF9F5] rounded-xl cursor-pointer">
-                      <input type="checkbox" className="rounded text-[#8C7A6B]" />
-                      <span>勝尾寺 迷你勝運達摩不倒翁</span>
-                    </label>
-                    <label className="flex items-center gap-2 p-2.5 bg-[#FBF9F5] rounded-xl cursor-pointer">
-                      <input type="checkbox" className="rounded text-[#8C7A6B]" />
-                      <span>護王神社 足腰守護御守</span>
-                    </label>
-                    <label className="flex items-center gap-2 p-2.5 bg-[#FBF9F5] rounded-xl cursor-pointer">
-                      <input type="checkbox" className="rounded text-[#8C7A6B]" />
-                      <span>御金神社 洗錢財運御守</span>
-                    </label>
-                    <label className="flex items-center gap-2 p-2.5 bg-[#FBF9F5] rounded-xl cursor-pointer">
-                      <input type="checkbox" className="rounded text-[#8C7A6B]" />
-                      <span>市比賣神社 姬神籤 (姫みくじ)</span>
-                    </label>
-                    <label className="flex items-center gap-2 p-2.5 bg-[#FBF9F5] rounded-xl cursor-pointer">
-                      <input type="checkbox" className="rounded text-[#8C7A6B]" />
-                      <span>日系藥妝保養品與梅田百貨精品</span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* TAB 5: 工具 */}
-            {activeTab === 'tools' && (
-              <div className="space-y-4">
-                <div className="bg-white p-4 rounded-2xl border border-[#E5E1DA]">
-                  <h3 className="font-bold text-sm text-[#4A3B32] mb-2 flex items-center gap-2">
-                    <i data-lucide="sun-snow" className="w-4 h-4 text-blue-600"></i> 2月/3月 天氣與防雪提示
-                  </h3>
-                  <p className="text-xs text-[#6E5D53] leading-relaxed">
-                    2 月底氣溫約 2°C - 10°C。貴船神社（洛北山區）極高機率積雪結冰，請穿著防滑保暖鞋款與厚外套。
-                  </p>
-                </div>
-                <div className="bg-[#FFFFFF] p-4 rounded-2xl border border-[#E5E1DA]">
-                  <h3 className="font-bold text-sm text-[#4A3B32] mb-2 flex items-center gap-2">
-                    <i data-lucide="train" className="w-4 h-4 text-[#8C7A6B]"></i> 交通票券說明
-                  </h3>
-                  <p className="text-xs text-[#6E5D53] leading-relaxed">
-                    全程使用 <strong>ICOCA</strong> 刷卡搭乘地鐵、公車與阪急電車；關西機場往京都搭乘 <strong>JR HARUKA 特急</strong>，難波往關西機場搭乘 <strong>南海電鐵 Rapi:t</strong>。
-                  </p>
-                </div>
-              </div>
-            )}
-
-          </main>
-
-          {/* 新增景點 Modal */}
-          {showAddModal && (
-            <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
-              <div className="bg-white rounded-2xl w-full max-w-md p-5 border border-[#E5E1DA] shadow-xl space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-bold text-base text-[#4A3B32] flex items-center gap-2">
-                    <i data-lucide="plus" className="w-4 h-4 text-[#8C7A6B]"></i> 新增景點至 DAY {selectedDay}
-                  </h3>
-                  <button onClick={() => setShowAddModal(false)} className="text-stone-400 hover:text-stone-600 text-sm font-bold">✕</button>
-                </div>
-
-                <form onSubmit={handleCreateSpotSubmit} className="space-y-3">
-                  <div>
-                    <label className="block text-xs font-bold text-[#6E5D53] mb-1">景點 / 地點名稱 *</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="例如：錦市場 / 伏見稻荷大社"
-                      value={newSpotForm.name}
-                      onChange={(e) => setNewSpotForm({ ...newSpotForm, name: e.target.value })}
-                      className="w-full px-3 py-2 text-xs bg-[#FBF9F5] border border-[#E5E1DA] rounded-xl focus:outline-none focus:border-[#8C7A6B]"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-bold text-[#6E5D53] mb-1">預計時間</label>
-                      <input
-                        type="text"
-                        placeholder="例如 14:00"
-                        value={newSpotForm.time}
-                        onChange={(e) => setNewSpotForm({ ...newSpotForm, time: e.target.value })}
-                        className="w-full px-3 py-2 text-xs bg-[#FBF9F5] border border-[#E5E1DA] rounded-xl focus:outline-none focus:border-[#8C7A6B]"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold text-[#6E5D53] mb-1">分類標籤</label>
-                      <select
-                        value={newSpotForm.category}
-                        onChange={(e) => setNewSpotForm({ ...newSpotForm, category: e.target.value })}
-                        className="w-full px-3 py-2 text-xs bg-[#FBF9F5] border border-[#E5E1DA] rounded-xl focus:outline-none focus:border-[#8C7A6B]"
-                      >
-                        <option value="spot">旅 (景點)</option>
-                        <option value="food">食 (美食)</option>
-                        <option value="shop">購 (購物)</option>
-                        <option value="transport">交 (交通)</option>
-                        <option value="hotel">宿 (住宿)</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-[#6E5D53] mb-1">地址 / 詳細地點</label>
-                    <input
-                      type="text"
-                      placeholder="例如：京都府京都市中京區..."
-                      value={newSpotForm.address}
-                      onChange={(e) => setNewSpotForm({ ...newSpotForm, address: e.target.value })}
-                      className="w-full px-3 py-2 text-xs bg-[#FBF9F5] border border-[#E5E1DA] rounded-xl focus:outline-none focus:border-[#8C7A6B]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-[#6E5D53] mb-1">備註說明</label>
-                    <textarea
-                      rows={2}
-                      placeholder="備註資訊、門票價格或注意事項..."
-                      value={newSpotForm.notes}
-                      onChange={(e) => setNewSpotForm({ ...newSpotForm, notes: e.target.value })}
-                      className="w-full p-3 text-xs bg-[#FBF9F5] border border-[#E5E1DA] rounded-xl focus:outline-none focus:border-[#8C7A6B] resize-none"
-                    />
-                  </div>
-
-                  <div className="flex justify-end gap-2 pt-2">
-                    <button
-                      type="button"
-                      onClick={() => setShowAddModal(false)}
-                      className="px-4 py-2 text-xs bg-[#E5E1DA] text-[#6E5D53] rounded-xl font-medium hover:bg-[#DCD7CE]"
-                    >
-                      取消
-                    </button>
-                    <button
-                      type="submit"
-                      className="px-4 py-2 text-xs bg-[#8C7A6B] text-white rounded-xl font-bold hover:bg-[#786458]"
-                    >
-                      確認新增
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
-
-          {/* 批量匯入 Modal */}
-          {showImportModal && (
-            <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
-              <div className="bg-white rounded-2xl w-full max-w-md p-5 border border-[#E5E1DA] shadow-xl space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-bold text-base text-[#4A3B32] flex items-center gap-2">
-                    <i data-lucide="file-text" className="w-4 h-4 text-[#8C7A6B]"></i> 匯入行程至 DAY {selectedDay}
-                  </h3>
-                  <button onClick={() => setShowImportModal(false)} className="text-stone-400 hover:text-stone-600 text-sm font-bold">✕</button>
-                </div>
-                
-                <p className="text-xs text-[#6E5D53]">
-                  每行輸入一個景點名稱（例：<code className="bg-[#F0EEE9] px-1.5 py-0.5 rounded text-[#4A3B32]">14:00 京都御所</code> 或 <code className="bg-[#F0EEE9] px-1.5 py-0.5 rounded text-[#4A3B32]">錦市場美食散策</code>）：
-                </p>
-
-                <textarea 
-                  rows={5}
-                  placeholder={`09:30 服部住吉神社\n11:30 勝尾寺\n14:00 箕面瀑布`}
-                  value={importText}
-                  onChange={(e) => setImportText(e.target.value)}
-                  className="w-full p-3 text-xs bg-[#FBF9F5] border border-[#E5E1DA] rounded-xl focus:outline-none focus:border-[#8C7A6B] font-mono resize-none"
-                />
-
-                <div className="flex justify-end gap-2 pt-2">
-                  <button
-                    onClick={() => setShowImportModal(false)}
-                    className="px-4 py-2 text-xs bg-[#E5E1DA] text-[#6E5D53] rounded-xl font-medium hover:bg-[#DCD7CE]"
-                  >
-                    取消
-                  </button>
-                  <button
-                    onClick={handleExecuteImport}
-                    className="px-4 py-2 text-xs bg-[#8C7A6B] text-white rounded-xl font-bold hover:bg-[#786458]"
-                  >
-                    確認匯入
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* 底部導覽列 */}
-          <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-[#E5E1DA] z-40 shadow-lg">
-            <div className="max-w-xl mx-auto flex justify-around py-2">
-              <button
-                onClick={() => setActiveTab('itinerary')}
-                className={`flex flex-col items-center py-1 px-3 rounded-xl transition-all ${
-                  activeTab === 'itinerary' ? 'text-[#8C7A6B] font-bold' : 'text-stone-400'
-                }`}
-              >
-                <i data-lucide="calendar" className="w-5 h-5"></i>
-                <span className="text-[10px] mt-1">行程</span>
-              </button>
-              <button
-                onClick={() => setActiveTab('shopping')}
-                className={`flex flex-col items-center py-1 px-3 rounded-xl transition-all ${
-                  activeTab === 'shopping' ? 'text-[#8C7A6B] font-bold' : 'text-stone-400'
-                }`}
-              >
-                <i data-lucide="shopping-bag" className="w-5 h-5"></i>
-                <span className="text-[10px] mt-1">商圈</span>
-              </button>
-              <button
-                onClick={() => setActiveTab('dining')}
-                className={`flex flex-col items-center py-1 px-3 rounded-xl transition-all ${
-                  activeTab === 'dining' ? 'text-[#8C7A6B] font-bold' : 'text-stone-400'
-                }`}
-              >
-                <i data-lucide="utensils" className="w-5 h-5"></i>
-                <span className="text-[10px] mt-1">美食</span>
-              </button>
-              <button
-                onClick={() => setActiveTab('checklist')}
-                className={`flex flex-col items-center py-1 px-3 rounded-xl transition-all ${
-                  activeTab === 'checklist' ? 'text-[#8C7A6B] font-bold' : 'text-stone-400'
-                }`}
-              >
-                <i data-lucide="check-square" className="w-5 h-5"></i>
-                <span className="text-[10px] mt-1">清單</span>
-              </button>
-              <button
-                onClick={() => setActiveTab('tools')}
-                className={`flex flex-col items-center py-1 px-3 rounded-xl transition-all ${
-                  activeTab === 'tools' ? 'text-[#8C7A6B] font-bold' : 'text-stone-400'
-                }`}
-              >
-                <i data-lucide="wrench" className="w-5 h-5"></i>
-                <span className="text-[10px] mt-1">工具</span>
-              </button>
-            </div>
-          </nav>
-
-        </div>
-      );
+      const activeNav = document.getElementById(`nav-${tab}`);
+      if (activeNav) {
+        activeNav.classList.remove('text-stone-400');
+        activeNav.classList.add('text-[#8C7A6B]', 'font-bold');
+      }
+      renderMain();
     }
 
-    ReactDOM.render(<App />, document.getElementById('root'));
+    // 切換 DAY
+    function setDay(day) {
+      selectedDay = String(day);
+      renderMain();
+    }
+
+    // 刪除景點
+    function deleteSpot(spotId) {
+      const dayData = itinerary.find(d => String(d.day) === String(selectedDay));
+      if (dayData) {
+        dayData.spots = dayData.spots.filter((s, idx) => (s.id || String(idx)) !== String(spotId));
+        renderMain();
+      }
+    }
+
+    // 導航 URL
+    function getDirectionsUrl(spot, prevSpot) {
+      const dest = encodeURIComponent(spot.address ? `${spot.name} ${spot.address}` : spot.name);
+      if (prevSpot) {
+        const orig = encodeURIComponent(prevSpot.address ? `${prevSpot.name} ${prevSpot.address}` : prevSpot.name);
+        return `https://www.google.com/maps/dir/?api=1&origin=${orig}&destination=${dest}&travelmode=transit`;
+      }
+      return `https://www.google.com/maps/dir/?api=1&destination=${dest}&travelmode=transit`;
+    }
+
+    // 主渲染流程
+    function renderMain() {
+      const main = document.getElementById('main-content');
+      if (!main) return;
+
+      if (activeTab === 'itinerary') {
+        const currentDayData = itinerary.find(d => String(d.day) === String(selectedDay)) || itinerary[0];
+
+        // 建立 DAY 按鈕標籤
+        let dayTabsHtml = itinerary.map(item => `
+          <button
+            onclick="setDay('${item.day}')"
+            class="flex-shrink-0 px-4 py-2 rounded-xl text-center transition-all cursor-pointer ${
+              String(selectedDay) === String(item.day) 
+                ? 'bg-[#8C7A6B] text-white font-bold shadow-sm' 
+                : 'bg-[#E5E1DA] text-[#6E5D53] hover:bg-[#DCD7CE]'
+            }"
+          >
+            <div class="text-xs font-bold uppercase tracking-wider">DAY ${item.day}</div>
+            <div class="text-[10px] opacity-90 mt-0.5">${item.date}</div>
+          </button>
+        `).join('');
+
+        // 建立時間軸景點卡片
+        let spotsHtml = currentDayData.spots.map((spot, index) => {
+          const cat = CATEGORY_CONFIG[spot.category] || CATEGORY_CONFIG.spot;
+          const prevSpot = index > 0 ? currentDayData.spots[index - 1] : null;
+          const navUrl = getDirectionsUrl(spot, prevSpot);
+
+          return `
+            <div class="relative z-10 flex items-start gap-3">
+              <div class="w-8 h-8 rounded-full ${cat.bg} ${cat.text} flex items-center justify-center font-bold text-xs flex-shrink-0 shadow-xs mt-1 border-2 border-[#F0EEE9]">
+                ${cat.label}
+              </div>
+
+              <div class="flex-1 bg-white rounded-2xl p-4 border border-[#E5E1DA] shadow-xs space-y-2">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2 text-xs font-bold text-[#786458]">
+                    <span class="flex items-center gap-1">
+                      <i data-lucide="clock" class="w-3.5 h-3.5 text-[#8C7A6B]"></i> ${spot.time}
+                    </span>
+                  </div>
+                  <button 
+                    onclick="deleteSpot('${spot.id || index}')"
+                    class="text-stone-300 hover:text-red-500 transition-colors p-1 cursor-pointer"
+                    title="刪除"
+                  >
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+
+                <h3 class="font-bold text-base text-[#4A3B32]">${spot.name}</h3>
+
+                ${spot.address ? `<p class="text-[11px] text-[#8C7A6B]">${spot.address}</p>` : ''}
+
+                ${spot.notes ? `
+                  <div class="bg-[#FBF9F5] p-3 rounded-xl border border-[#F0EEE9] text-xs text-[#59483E] leading-relaxed">
+                    ${spot.notes}
+                  </div>
+                ` : ''}
+
+                <div class="pt-2 flex items-center justify-between border-t border-[#F0EEE9]">
+                  <span class="text-[11px] text-[#8C7A6B] flex items-center gap-1">
+                    <i data-lucide="train" class="w-3.5 h-3.5"></i> 
+                    ${index > 0 ? `前一站：${currentDayData.spots[index - 1].name.slice(0, 8)}...` : '當日第一站'}
+                  </span>
+                  
+                  <a
+                    href="${navUrl}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1 text-xs bg-[#8C7A6B] text-white hover:bg-[#786458] px-3 py-1.5 rounded-lg font-medium shadow-xs transition-colors"
+                  >
+                    <i data-lucide="navigation" class="w-3 h-3"></i> 路線規劃 & 時間
+                  </a>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        main.innerHTML = `
+          <div class="space-y-4">
+            <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+              ${dayTabsHtml}
+            </div>
+
+            <div class="bg-white rounded-2xl p-4 border border-[#E5E1DA] shadow-xs">
+              <div class="flex items-center gap-2 text-xs font-bold text-[#8C7A6B] mb-1">
+                <span class="bg-[#8C7A6B] text-white px-2 py-0.5 rounded-md text-[11px]">DAY ${currentDayData.day}</span>
+                <span>${currentDayData.date} (${currentDayData.week})</span>
+              </div>
+              <h2 class="text-base font-bold text-[#4A3B32] mt-1 mb-2">${currentDayData.title}</h2>
+              <div class="flex items-center justify-between text-xs text-[#786458] border-t border-[#F0EEE9] pt-2.5 mt-2">
+                <div class="flex items-center gap-1.5 truncate">
+                  <i data-lucide="map-pin" class="w-3.5 h-3.5 flex-shrink-0 text-[#8C7A6B]"></i>
+                  <span>住宿：${currentDayData.hotel}</span>
+                </div>
+                ${currentDayData.hotelMapUrl ? `
+                  <a href="${currentDayData.hotelMapUrl}" target="_blank" class="flex items-center gap-1 text-[#8C7A6B] font-medium hover:underline flex-shrink-0 ml-2">
+                    導航 <i data-lucide="external-link" class="w-3 h-3"></i>
+                  </a>
+                ` : ''}
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-xs font-bold text-[#6E5D53]">當日景點明細 (${currentDayData.spots.length})</span>
+            </div>
+
+            <div class="space-y-4 relative before:absolute before:inset-0 before:left-[15px] before:w-0.5 before:bg-[#DCD7CE] before:z-0">
+              ${spotsHtml}
+            </div>
+          </div>
+        `;
+      } else if (activeTab === 'shopping') {
+        main.innerHTML = `
+          <div class="space-y-4">
+            <div class="bg-white p-4 rounded-2xl border border-[#E5E1DA]">
+              <h3 class="font-bold text-sm text-[#4A3B32] mb-2 flex items-center gap-2">
+                <i data-lucide="shopping-bag" class="w-4 h-4 text-[#8C7A6B]"></i> 京阪採購精選商圈
+              </h3>
+              <div class="space-y-3 text-xs">
+                <div class="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
+                  <div class="font-bold text-[#59483E] text-sm">祇園周邊 & 花見小路</div>
+                  <div class="text-[#8C7A6B] mt-1">祇園郵局體驗印製特色明信片，購買京都限定風格禮品。</div>
+                </div>
+                <div class="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
+                  <div class="font-bold text-[#59483E] text-sm">錦市場 & 新京極商店街 & 四條河原町</div>
+                  <div class="text-[#8C7A6B] mt-1">京都最經典散策路線！體驗美食小吃、藥妝旗艦店與高島屋百貨。</div>
+                </div>
+                <div class="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
+                  <div class="font-bold text-[#59483E] text-sm">難波 & 心齋橋 & 道頓堀</div>
+                  <div class="text-[#8C7A6B] mt-1">大阪購物天堂， PARCO、高島屋、激安殿堂與藥妝店旗艦館。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (activeTab === 'dining') {
+        main.innerHTML = `
+          <div class="space-y-4">
+            <div class="bg-white p-4 rounded-2xl border border-[#E5E1DA]">
+              <h3 class="font-bold text-sm text-[#4A3B32] mb-2 flex items-center gap-2">
+                <i data-lucide="utensils" class="w-4 h-4 text-[#8C7A6B]"></i> 精選美食與餐廳必吃
+              </h3>
+              <div class="space-y-2 text-xs">
+                <div class="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
+                  <div class="font-bold text-[#59483E]">レットイットビーフ 肥後橋店 (Let It Beef Higobashi)</div>
+                  <div class="text-[#8C7A6B] mt-0.5">肥後橋/江戶堀人氣燒肉名店，頂級黑毛和牛與熟成牛肉饗宴。</div>
+                </div>
+                <div class="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
+                  <div class="font-bold text-[#59483E]">Gyutan Charcoal grilled YOSHIJI Unagidani (牛たん炭火焼 吉次 鰻谷店)</div>
+                  <div class="text-[#8C7A6B] mt-0.5">心齋橋鰻谷名店，香氣四溢的仙台風味厚切炭火烤牛舌定食。</div>
+                </div>
+                <div class="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
+                  <div class="font-bold text-[#59483E]">Shabuzen Umedaten (しゃぶ禪 梅田店)</div>
+                  <div class="text-[#8C7A6B] mt-0.5">梅田高級黑毛和牛與神戶牛涮涮鍋／壽喜燒頂級晚宴。</div>
+                </div>
+                <div class="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
+                  <div class="font-bold text-[#59483E]">KAKO TO IMA (カコトイマ)</div>
+                  <div class="text-[#8C7A6B] mt-0.5">中之島圖書館內人氣風格咖啡餐廳。</div>
+                </div>
+                <div class="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
+                  <div class="font-bold text-[#59483E]">Ginsui 銀水 (先斗町)</div>
+                  <div class="text-[#8C7A6B] mt-0.5">京都先斗町熱門道地日式料理與晚宴居酒屋。</div>
+                </div>
+                <div class="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
+                  <div class="font-bold text-[#59483E]">貴船茶屋 (Kifune Chaya)</div>
+                  <div class="text-[#8C7A6B] mt-0.5">貴船神社旁的極致特色餐飲，享用洛北川床與季節精緻日式料理。</div>
+                </div>
+                <div class="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
+                  <div class="font-bold text-[#59483E]">法善寺 山一 (Hozenji Yamakazu 鰻魚飯)</div>
+                  <div class="text-[#8C7A6B] mt-0.5">難波法善寺橫丁內名店，外酥內嫩的頂級炭火烤鰻魚飯。</div>
+                </div>
+                <div class="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
+                  <div class="font-bold text-[#59483E]">柚子元 先斗町店</div>
+                  <div class="text-[#8C7A6B] mt-0.5">招牌柚子火鍋與道地日式手作料理。</div>
+                </div>
+                <div class="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
+                  <div class="font-bold text-[#59483E]">市川屋咖啡</div>
+                  <div class="text-[#8C7A6B] mt-0.5">招牌季節水果三明治與古民家手沖咖啡。</div>
+                </div>
+                <div class="p-3 bg-[#FBF9F5] rounded-xl border border-[#F0EEE9]">
+                  <div class="font-bold text-[#59483E]">道頓堀章魚燒與日式串炸</div>
+                  <div class="text-[#8C7A6B] mt-0.5">大阪代表性平民美食。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (activeTab === 'checklist') {
+        main.innerHTML = `
+          <div class="space-y-4">
+            <div class="bg-white p-4 rounded-2xl border border-[#E5E1DA]">
+              <h3 class="font-bold text-sm text-[#4A3B32] mb-3 flex items-center gap-2">
+                <i data-lucide="check-square" class="w-4 h-4 text-[#8C7A6B]"></i> 必買紀念品與藥妝清單
+              </h3>
+              <div class="space-y-2 text-xs">
+                <label class="flex items-center gap-2 p-2.5 bg-[#FBF9F5] rounded-xl cursor-pointer">
+                  <input type="checkbox" class="rounded text-[#8C7A6B]" />
+                  <span>祇園郵局 京都限定明信片與風景印</span>
+                </label>
+                <label class="flex items-center gap-2 p-2.5 bg-[#FBF9F5] rounded-xl cursor-pointer">
+                  <input type="checkbox" class="rounded text-[#8C7A6B]" />
+                  <span>頂法寺 六角堂 鴿子造型御神籤</span>
+                </label>
+                <label class="flex items-center gap-2 p-2.5 bg-[#FBF9F5] rounded-xl cursor-pointer">
+                  <input type="checkbox" class="rounded text-[#8C7A6B]" />
+                  <span>勝尾寺 迷你勝運達摩不倒翁</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (activeTab === 'tools') {
+        main.innerHTML = `
+          <div class="space-y-4">
+            <div class="bg-white p-4 rounded-2xl border border-[#E5E1DA]">
+              <h3 class="font-bold text-sm text-[#4A3B32] mb-2 flex items-center gap-2">
+                <i data-lucide="sun-snow" class="w-4 h-4 text-blue-600"></i> 2月/3月 天氣與提示
+              </h3>
+              <p class="text-xs text-[#6E5D53] leading-relaxed">
+                氣溫約 2°C - 10°C。洛北貴船神社山區極高機率積雪，請穿著保暖外套與防滑鞋款。
+              </p>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-[#E5E1DA]">
+              <h3 class="font-bold text-sm text-[#4A3B32] mb-2 flex items-center gap-2">
+                <i data-lucide="train" class="w-4 h-4 text-[#8C7A6B]"></i> 交通票券
+              </h3>
+              <p class="text-xs text-[#6E5D53] leading-relaxed">
+                全程使用 <strong>ICOCA</strong> 刷卡搭乘地鐵、公車與阪急電車；關西機場往京都搭乘 <strong>JR HARUKA 特急</strong>。
+              </p>
+            </div>
+          </div>
+        `;
+      }
+
+      // 重新加載 Lucide 圖示
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+
+    // 頁面初始化
+    window.addEventListener('DOMContentLoaded', () => {
+      renderMain();
+    });
   </script>
 </body>
 </html>
