@@ -12,7 +12,7 @@
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   
-  <!-- Babel for JSX Compilation -->
+  <!-- Babel for JSX Compilation (Required for Github Pages single-file execution) -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <!-- Lucide Icons CDN -->
@@ -420,7 +420,7 @@
 
       const [itinerary, setItinerary] = useState(() => {
         try {
-          const saved = localStorage.getItem('kyoto_osaka_html_app');
+          const saved = localStorage.getItem('kyoto_osaka_gh_pages_app');
           return saved ? JSON.parse(saved) : INITIAL_ITINERARY;
         } catch (e) {
           return INITIAL_ITINERARY;
@@ -429,7 +429,7 @@
 
       useEffect(() => {
         try {
-          localStorage.setItem('kyoto_osaka_html_app', JSON.stringify(itinerary));
+          localStorage.setItem('kyoto_osaka_gh_pages_app', JSON.stringify(itinerary));
         } catch (e) {}
       }, [itinerary]);
 
